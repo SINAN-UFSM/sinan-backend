@@ -1,7 +1,8 @@
-from tokenize import TokenError
 import uuid
+from tokenize import TokenError
 
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status, permissions, filters
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,21 +13,33 @@ from drf_spectacular.utils import extend_schema, OpenApiExample
 from .models import *
 from .serializers import *
 
+# --- PAGINATION CONFIG ---
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+# --- UTILITIES ---
+
 @api_view(['GET'])
 def healthcheck(request):
     """
-    Rota simples para verificar se a API está online.
+    Simple endpoint to check if the API is online.
     """
-    return Response({"status": "ok", "mensagem": "A API está a funcionar perfeitamente!"})
+    return Response({"status": "ok", "message": "The API is operating flawlessly!"})
 
-# Views de Autenticação
+
+# --- AUTHENTICATION VIEWS ---
+
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
         """
-        Endpoint para autenticação de usuários.
-        Retorna tokens JWT (access e refresh) se as credenciais forem válidas.
+        User authentication endpoint.
+        Returns JWT tokens (access and refresh) upon valid credentials.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -41,13 +54,14 @@ class LoginView(TokenObtainPairView):
             status=status.HTTP_200_OK
         )
 
+
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         """
-        Endpoint para logout de usuários.
-        Invalida o token de refresh fornecido.
+        User logout endpoint.
+        Blacklists the provided refresh token.
         """
         try:
             refresh_token = request.data.get("refresh")
@@ -56,7 +70,7 @@ class LogoutView(APIView):
                 return Response(
                     {
                         "type": "validation_error",
-                        "detail": "O campo 'refresh' é obrigatório.",
+                        "detail": "The 'refresh' field is required.",
                         "code": "missing_field"
                     }, 
                     status=status.HTTP_400_BAD_REQUEST
@@ -70,7 +84,7 @@ class LogoutView(APIView):
             return Response(
                 {
                     "type": "token_error",
-                    "detail": f"Erro ao invalidar o token: {str(e)}",
+                    "detail": f"Failed to invalidate token: {str(e)}",
                     "code": "token_error"
                 },
                 status=status.HTTP_400_BAD_REQUEST
@@ -79,71 +93,141 @@ class LogoutView(APIView):
             return Response(
                 {
                     "type": "server_error",
-                    "detail": f"Erro interno ao processar o logout: {str(e)}",
+                    "detail": f"Internal server error processing logout: {str(e)}",
                     "request_id": str(uuid.uuid4())
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-# ViewSets  Principais
-class UnidadeViewSet(viewsets.ModelViewSet):
-    queryset = Unidade.objects.all()
-    serializer_class = UnidadeSerializer
-
-class UsuarioViewSet(viewsets.ModelViewSet):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
-
-class PacienteViewSet(viewsets.ModelViewSet):
-    queryset = Paciente.objects.all()
-    serializer_class = PacienteSerializer
 
 
-# ViewSets para as Notificações Gerais e Específicas
+# --- MAIN VIEWSETS ---
 
-class NotificacaoViewSet(viewsets.ModelViewSet):
-    queryset = Notificacao.objects.all()
-    serializer_class = NotificacaoSerializer
+class UnitViewSet(viewsets.ModelViewSet):
+    queryset = Unit.objects.filter(is_active=True)
+    serializer_class = UnitSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+    http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
 
-class NotificacaoAidsViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoAids.objects.all()
-    serializer_class = NotificacaoAidsSerializer
+    def destroy(self, request, *args, **kwargs):
+        """
+        Logical deletion for health units to preserve audit history.
+        """
+        instance = self.get_object()
+        instance.is_active = False
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class NotificacaoBotulismoViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoBotulismo.objects.all()
-    serializer_class = NotificacaoBotulismoSerializer
 
-class NotificacaoEpizootiaViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoEpizootia.objects.all()
-    serializer_class = NotificacaoEpizootiaSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
-class NotificacaoEsquistossomoseViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoEsquistossomose.objects.all()
-    serializer_class = NotificacaoEsquistossomoseSerializer
 
-class NotificacaoFebreAmarelaViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoFebreAmarela.objects.all()
-    serializer_class = NotificacaoFebreAmarelaSerializer
+class PatientViewSet(viewsets.ModelViewSet):
+    queryset = Patient.objects.filter(is_active=True).order_by('-id')
+    serializer_class = PatientSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'cpf']
+    http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
 
-class NotificacaoDengueChikungunyaViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoDengueChikungunya.objects.all()
-    serializer_class = NotificacaoDengueChikungunyaSerializer
+    def destroy(self, request, *args, **kwargs):
+        """
+        Logical deletion for patients to shield epidemiological disease tracking integrity.
+        """
+        instance = self.get_object()
+        instance.is_active = False
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
 
-class NotificacaoAnimalPeconhentoViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoAnimalPeconhento.objects.all()
-    serializer_class = NotificacaoAnimalPeconhentoSerializer
+# --- EPIDEMIOLOGICAL NOTIFICATION VIEWSETS ---
 
-class NotificacaoAntiRabicoViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoAntiRabico.objects.all()
-    serializer_class = NotificacaoAntiRabicoSerializer
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
-class NotificacaoColeraViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoColera.objects.all()
-    serializer_class = NotificacaoColeraSerializer
 
-class NotificacaoChikungunyaViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoChikungunya.objects.all()
-    serializer_class = NotificacaoChikungunyaSerializer
+class AidsNotificationViewSet(viewsets.ModelViewSet):
+    queryset = AidsNotification.objects.all()
+    serializer_class = AidsNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
 
-class NotificacaoCoquelucheViewSet(viewsets.ModelViewSet):
-    queryset = NotificacaoCoqueluche.objects.all()
-    serializer_class = NotificacaoCoquelucheSerializer
+
+class BotulismNotificationViewSet(viewsets.ModelViewSet):
+    queryset = BotulismNotification.objects.all()
+    serializer_class = BotulismNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class EpizooticNotificationViewSet(viewsets.ModelViewSet):
+    queryset = EpizooticNotification.objects.all()
+    serializer_class = EpizooticNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class SchistosomiasisNotificationViewSet(viewsets.ModelViewSet):
+    queryset = SchistosomiasisNotification.objects.all()
+    serializer_class = SchistosomiasisNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class YellowFeverNotificationViewSet(viewsets.ModelViewSet):
+    queryset = YellowFeverNotification.objects.all()
+    serializer_class = YellowFeverNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class DengueChikungunyaNotificationViewSet(viewsets.ModelViewSet):
+    queryset = DengueChikungunyaNotification.objects.all()
+    serializer_class = DengueChikungunyaNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class VenomousAnimalNotificationViewSet(viewsets.ModelViewSet):
+    queryset = VenomousAnimalNotification.objects.all()
+    serializer_class = VenomousAnimalNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class RabiesProphylaxisNotificationViewSet(viewsets.ModelViewSet):
+    queryset = RabiesProphylaxisNotification.objects.all()
+    serializer_class = RabiesProphylaxisNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class CholeraNotificationViewSet(viewsets.ModelViewSet):
+    queryset = CholeraNotification.objects.all()
+    serializer_class = CholeraNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ChikungunyaNotificationViewSet(viewsets.ModelViewSet):
+    queryset = ChikungunyaNotification.objects.all()
+    serializer_class = ChikungunyaNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class WhoopingCoughNotificationViewSet(viewsets.ModelViewSet):
+    queryset = WhoopingCoughNotification.objects.all()
+    serializer_class = WhoopingCoughNotificationSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]

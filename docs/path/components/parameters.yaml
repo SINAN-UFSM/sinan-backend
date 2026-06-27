@@ -1,3 +1,14 @@
+# --- ID PARAMETERS ---
+
+PathId:
+  name: id
+  in: path
+  required: true
+  description: ID único do recurso.
+  schema:
+    type: integer
+  example: 12
+
 # --- PAGINATION PARAMETERS ---
 PageParam:
   name: page
@@ -6,6 +17,7 @@ PageParam:
   schema:
     type: integer
   example: 1
+
 PageSizeParam:
   name: page_size
   in: query

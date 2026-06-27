@@ -1,88 +1,121 @@
 '''
-Módulo de Serialização (API Integration)
-    * Realiza a transformação dos modelos Django em formato JSON.
-    * Facilita a comunicação entre o banco de dados e o front-end.
-    * Define serializadores para todas as entidades e tipos de notificação.
-    * Serializer serao usados no views depois
-    * Atributos:
-    :param fields: Especifica os campos a serem incluídos na serialização (neste caso, todos os campos).
-    :type fields: list ou str
-
-    :param model: Define o modelo a ser serializado.
-    :type model: Django Model
+Serialization Module (API Integration)
+    * Transforms Django models into JSON format and vice versa.
+    * Facilitates seamless communication between the database and the front-end.
+    * Defines serializers for all core entities and disease notification types.
 '''
 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import *
 
-# Serializadores para Autenticação
+# --- AUTHENTICATION SERIALIZERS ---
+
 class LoginSerializer(TokenObtainPairSerializer):
+    """
+    Custom JWT token serializer inheriting from SimpleJWT.
+    """
     pass
 
-class UnidadeSerializer(serializers.ModelSerializer): # Serializa modelo de Unidades
+
+# --- MAIN CORE SERIALIZERS ---
+
+class UnitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Unidade
+        model = Unit
         fields = '__all__'
-class UsuarioSerializer(serializers.ModelSerializer): # Serializa modelo de Usuários (typo mantido)
+
+        extra_kwargs = {
+            'is_active': {'read_only': True}
+        }
+
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuario
+        model = User
+        # Exclude password for security when returning user lists
+        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'email', 'name', 'role', 'unit', 'password']
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
         fields = '__all__'
-class PacienteSerializer(serializers.ModelSerializer): # Serializa modelo de Pacientes
+
+        extra_kwargs = {
+            'is_active': {'read_only': True}
+        }
+
+# --- EPIDEMIOLOGICAL NOTIFICATION SERIALIZERS ---
+
+class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Paciente
+        model = Notification
         fields = '__all__'
 
 
-class NotificacaoSerializer(serializers.ModelSerializer): # Serializa notificações gerais
+class AidsNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Notificacao
+        model = AidsNotification
         fields = '__all__'
-class NotificacaoBaseSerializer(serializers.ModelSerializer): # Serializa base de notificações
+
+
+class BotulismNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoBase
+        model = BotulismNotification
         fields = '__all__'
-class NotificacaoAidsSerializer(serializers.ModelSerializer): # Serializa notificações de Aids
+
+
+class EpizooticNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoAids
+        model = EpizooticNotification
         fields = '__all__'
-class NotificacaoBotulismoSerializer(serializers.ModelSerializer): # Serializa notificações de Botulismo
+
+
+class SchistosomiasisNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoBotulismo
+        model = SchistosomiasisNotification
         fields = '__all__'
-class NotificacaoEpizootiaSerializer(serializers.ModelSerializer): # Serializa notificações de Epizootia
+
+
+class YellowFeverNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoEpizootia
+        model = YellowFeverNotification
         fields = '__all__'
-class NotificacaoEsquistossomoseSerializer(serializers.ModelSerializer): # Serializa notificações de Esquistossomose
+
+
+class DengueChikungunyaNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoEsquistossomose
+        model = DengueChikungunyaNotification
         fields = '__all__'
-class NotificacaoFebreAmarelaSerializer(serializers.ModelSerializer): # Serializa notificações de Febre Amarela
+
+
+class VenomousAnimalNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoFebreAmarela
+        model = VenomousAnimalNotification
         fields = '__all__'
-class NotificacaoDengueChikungunyaSerializer(serializers.ModelSerializer): # Serializa notificações de Dengue/Chikungunya
+
+
+class RabiesProphylaxisNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoDengueChikungunya
+        model = RabiesProphylaxisNotification
         fields = '__all__'
-class NotificacaoAnimalPeconhentoSerializer(serializers.ModelSerializer): # Serializa notificações de Animais Peçonhentos
+
+
+class CholeraNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoAnimalPeconhento
-        fields = '__all__' #
-class NotificacaoAntiRabicoSerializer(serializers.ModelSerializer): # Serializa notificações Antirrábicas
-    class Meta:
-        model = NotificacaoAntiRabico
+        model = CholeraNotification
         fields = '__all__'
-class NotificacaoColeraSerializer(serializers.ModelSerializer): # Serializa notificações de Cólera
+
+
+class ChikungunyaNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoColera
+        model = ChikungunyaNotification
         fields = '__all__'
-class NotificacaoChikungunyaSerializer(serializers.ModelSerializer): # Serializa notificações de Chikungunya
+
+
+class WhoopingCoughNotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NotificacaoChikungunya
-        fields = '__all__'
-class NotificacaoCoquelucheSerializer(serializers.ModelSerializer): # Serializa notificações de Coqueluche
-    class Meta:
-        model = NotificacaoCoqueluche
+        model = WhoopingCoughNotification
         fields = '__all__'

@@ -1,15 +1,5 @@
 # ENDPOINT: /units/{id}
 
-# --- SHARED PARAMETERS ---
-parameters:
-  - name: id
-    in: path
-    required: true
-    description: ID único da unidade de saúde.
-    schema:
-      type: integer
-      example: 12
-
 # --- GET METHOD ---
 get:
   summary: Buscar detalhes da unidade
@@ -17,6 +7,8 @@ get:
   operationId: detalharUnidade
   tags:
     - Unidades
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     "200":
       description: Unidade recuperada com sucesso.
@@ -38,6 +30,8 @@ put:
   operationId: atualizarUnidade
   tags:
     - Unidades
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   requestBody:
     required: true
     content:
@@ -67,6 +61,8 @@ delete:
   operationId: deletarUnidade
   tags:
     - Unidades
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     "204":
       description: Unidade excluída com sucesso (Sem conteúdo de retorno).

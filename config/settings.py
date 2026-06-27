@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
 
-AUTH_USER_MODEL = 'app.Usuario'
+AUTH_USER_MODEL = 'app.User'
 
 ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if host.strip()]
 
