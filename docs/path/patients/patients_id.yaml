@@ -1,15 +1,5 @@
 # ENDPOINT: /patients/{id}
 
-# --- SHARED PARAMETERS ---
-parameters:
-  - name: id
-    in: path
-    required: true
-    description: ID único do paciente.
-    schema:
-      type: integer
-      example: 105
-
 # --- GET METHOD ---
 get:
   summary: Buscar detalhes do paciente
@@ -17,6 +7,8 @@ get:
   operationId: detalharPaciente
   tags:
     - Pacientes
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     "200":
       description: Dados do paciente recuperados com sucesso.
@@ -38,6 +30,8 @@ put:
   operationId: atualizarPaciente
   tags:
     - Pacientes
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   requestBody:
     required: true
     content:
@@ -67,6 +61,8 @@ delete:
   operationId: deletarPaciente
   tags:
     - Pacientes
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     "204":
       description: Paciente excluído com sucesso (Sem conteúdo de retorno).

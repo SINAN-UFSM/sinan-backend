@@ -6,6 +6,10 @@ get:
   operationId: listarPacientes
   tags:
     - Pacientes
+  parameters:
+    - $ref: "../components/parameters.yaml#/PageParam"
+    - $ref: "../components/parameters.yaml#/PageSizeParam"
+    - $ref: "../components/parameters.yaml#/SearchParam"
   responses:
     "200":
       description: Lista de pacientes recuperada com sucesso.
