@@ -1,5 +1,6 @@
 import uuid
 from tokenize import TokenError
+from django.db import transaction
 
 from rest_framework import viewsets, status, permissions, filters
 from rest_framework.pagination import PageNumberPagination
@@ -12,6 +13,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from .models import *
 from .serializers import *
+from .notifications.polymorphic import (
+    POLYMORPHIC_REGISTRY,
+    build_snapshot_payload,
+    build_specific_payload,
+)
 
 # --- PAGINATION CONFIG ---
 
@@ -157,6 +163,61 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        notification_type = request.data.get('notification_type_slug')
+        polymorphic_config = POLYMORPHIC_REGISTRY.get(notification_type)
+
+        # Keep default behavior for non-polymorphic notification types.
+        if not polymorphic_config:
+            return super().create(request, *args, **kwargs)
+
+        specific_fields = request.data.get('specific_fields')
+        if not isinstance(specific_fields, dict):
+            return Response(
+                {
+                    'type': 'validation_error',
+                    'detail': "The 'specific_fields' field is required and must be an object for polymorphic notifications.",
+                    'code': 'invalid_specific_fields',
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        normalized_slug = polymorphic_config['storage_slug']
+
+        base_payload = {
+            'patient_id': request.data.get('patient_id'),
+            'unit_id': request.data.get('unit_id'),
+            'status': request.data.get('status'),
+            'notification_type_slug': normalized_slug,
+            'notification_date': request.data.get('notification_date'),
+            'occurrence_date': request.data.get('occurrence_date'),
+            'notes': request.data.get('notes'),
+        }
+
+        serializer = self.get_serializer(data=base_payload)
+        serializer.is_valid(raise_exception=True)
+
+        with transaction.atomic():
+            notification = serializer.save(user=request.user)
+            patient = notification.patient
+            specific_payload = build_specific_payload(specific_fields, polymorphic_config)
+            snapshot_payload = build_snapshot_payload(patient)
+
+            specific_notification = polymorphic_config['specific_model'].objects.create(
+                notification=notification,
+                **snapshot_payload,
+                **specific_payload,
+            )
+
+        response_data = serializer.data
+        response_data['specific_fields'] = {
+            field_name: getattr(specific_notification, field_name)
+            for field_name in polymorphic_config.get('field_aliases', {}).keys()
+        }
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AidsNotificationViewSet(viewsets.ModelViewSet):
