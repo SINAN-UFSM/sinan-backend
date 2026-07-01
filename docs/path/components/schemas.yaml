@@ -246,31 +246,106 @@ PaginatedNotificationList:
 # --- DENGUE NOTIFICATION SCHEMAS ---
 DengueSpecificFields:
   type: object
+  description: Campos específicos da ficha de Dengue/Chikungunya enviados em specific_fields.
+  additionalProperties: true
   properties:
-    has_fever:
+    occupation:
       type: string
-      description: Indica presença de febre.
+      description: Ocupação informada na ficha do agravo (campo opcional e específico deste formulário).
+      example: "Técnico de enfermagem"
+    st_fever:
+      type: string
       example: "yes"
-    has_severe_arthralgia:
+    st_myalgia:
       type: string
-      description: Indica presença de artralgia intensa.
       example: "yes"
-    chik_s1_result:
+    st_headache:
       type: string
-      description: Resultado do exame CHIK S1.
-      example: "non_reactive"
-    ns1_result:
+      example: "yes"
+    st_exanthema:
       type: string
-      description: Resultado do exame NS1.
-      example: "reactive"
-    classification_type:
-      type: string
-      description: Classificação final do caso.
-      example: "dengue_with_warning_signs"
-    has_shock:
-      type: string
-      description: Indica presença de choque.
       example: "no"
+    st_vomiting:
+      type: string
+      example: "no"
+    st_nausea:
+      type: string
+      example: "yes"
+    st_back_pain:
+      type: string
+      example: "no"
+    st_conjunctivitis:
+      type: string
+      example: "no"
+    st_arthritis:
+      type: string
+      example: "no"
+    st_severe_arthralgia:
+      type: string
+      example: "yes"
+    st_petechiae:
+      type: string
+      example: "no"
+    st_leukopenia:
+      type: string
+      example: "unknown"
+    st_tourniquet_test:
+      type: string
+      example: "no"
+    st_retroorbital_pain:
+      type: string
+      example: "yes"
+    dt_den_ns1:
+      type: string
+      format: date
+      example: "2026-06-22"
+    res_den_ns1:
+      type: string
+      example: "reactive"
+    dt_den_igm:
+      type: string
+      format: date
+      example: "2026-06-23"
+    res_den_igm:
+      type: string
+      example: "non_reactive"
+    dt_chik_igm_s1:
+      type: string
+      format: date
+      example: "2026-06-23"
+    dt_chik_igm_s2:
+      type: string
+      format: date
+      example: "2026-06-28"
+    st_hospitalization:
+      type: string
+      example: "unknown"
+    dt_hospitalization:
+      type: string
+      format: date
+      example: "2026-06-24"
+    st_autochthonous:
+      type: string
+      example: "indeterminate"
+    tp_final_classification:
+      type: string
+      example: "11"
+    tp_confirmation_criteria:
+      type: string
+      example: "1"
+    tp_clinical_presentation:
+      type: string
+      example: "1"
+    tp_evolution:
+      type: string
+      example: "1"
+    dt_closing:
+      type: string
+      format: date
+      example: "2026-07-01"
+    additional_observations:
+      type: string
+      example: "Paciente acompanhado em unidade de referência."
 
 DengueCreateRequest:
   allOf:
@@ -296,12 +371,18 @@ DengueCreateRequest:
     occurrence_date: "2026-06-20"
     notes: "Paciente internado."
     specific_fields:
-      has_fever: "yes"
-      has_severe_arthralgia: "yes"
-      chik_s1_result: "non_reactive"
-      ns1_result: "reactive"
-      classification_type: "dengue_with_warning_signs"
-      has_shock: "no"
+      dt_investigation: "2026-06-21"
+      occupation: "Técnico de enfermagem"
+      st_fever: "yes"
+      st_myalgia: "yes"
+      st_headache: "yes"
+      st_severe_arthralgia: "yes"
+      dt_den_ns1: "2026-06-22"
+      res_den_ns1: "reactive"
+      st_hospitalization: "unknown"
+      tp_final_classification: "11"
+      tp_evolution: "1"
+      dt_closing: "2026-07-01"
 
 DengueNotificationResponse:
   allOf:
@@ -322,9 +403,15 @@ DengueNotificationResponse:
     notes: "Paciente internado."
     created_at: "2026-07-01T10:30:00Z"
     specific_fields:
-      has_fever: "yes"
-      has_severe_arthralgia: "yes"
-      chik_s1_result: "non_reactive"
-      ns1_result: "reactive"
-      classification_type: "dengue_with_warning_signs"
-      has_shock: "no"
+      dt_investigation: "2026-06-21"
+      occupation: "Técnico de enfermagem"
+      st_fever: "yes"
+      st_myalgia: "yes"
+      st_headache: "yes"
+      st_severe_arthralgia: "yes"
+      dt_den_ns1: "2026-06-22"
+      res_den_ns1: "reactive"
+      st_hospitalization: "unknown"
+      tp_final_classification: "11"
+      tp_evolution: "1"
+      dt_closing: "2026-07-01"
