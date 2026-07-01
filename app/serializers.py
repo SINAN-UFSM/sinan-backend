@@ -86,9 +86,10 @@ class NotificationSerializer(serializers.ModelSerializer):
         specific_model = polymorphic_config['specific_model']
         try:
             specific_instance = specific_model.objects.get(notification=obj)
+            field_aliases = polymorphic_config.get('field_aliases', {})
             return {
-                field_alias: getattr(specific_instance, field_name, None)
-                for field_alias, field_name in polymorphic_config.get('field_aliases', {}).items()
+                model_field: getattr(specific_instance, model_field, None)
+                for model_field in field_aliases.keys()
             }
         except specific_model.DoesNotExist:
             return {}

@@ -52,6 +52,30 @@ post:
       application/json:
         schema:
           $ref: "../components/schemas.yaml#/CreateNotificationRequest"
+        examples:
+          dengueCompleto:
+            summary: Exemplo completo de notificação de Dengue/Chikungunya
+            value:
+              patient_id: 55
+              unit_id: 12
+              status: "draft"
+              notification_type_slug: "dengue"
+              notification_date: "2026-06-25"
+              occurrence_date: "2026-06-20"
+              notes: "Paciente internado."
+              specific_fields:
+                dt_investigation: "2026-06-21"
+                occupation: "Técnico de enfermagem"
+                st_fever: "yes"
+                st_myalgia: "yes"
+                st_headache: "yes"
+                st_severe_arthralgia: "yes"
+                dt_den_ns1: "2026-06-22"
+                res_den_ns1: "reactive"
+                st_hospitalization: "unknown"
+                tp_final_classification: "11"
+                tp_evolution: "1"
+                dt_closing: "2026-07-01"
   responses:
     # --- CREATED RESPONSE ---
     "201":

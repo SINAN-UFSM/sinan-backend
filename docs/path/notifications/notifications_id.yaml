@@ -1,14 +1,5 @@
 # ENDPOINT: /notifications/{id}
 
-parameters:
-  - name: id
-    in: path
-    description: ID da notificação a ser consultada.
-    required: true
-    schema:
-      type: integer
-      example: 12345
-
 # --- GET METHOD ---
 get:
   summary: Consultar notificação por ID (Polimórfico)
@@ -18,6 +9,8 @@ get:
   tags:
     - Notificações (Geral)
   operationId: consultarNotificacaoPorID
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     # --- SUCCESS RESPONSE ---
     "200":
@@ -47,6 +40,8 @@ put:
   tags:
     - Notificações (Geral)
   operationId: atualizarNotificacaoPorID
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   requestBody:
     description: Dados da notificação a serem atualizados.
     required: true
@@ -54,6 +49,30 @@ put:
       application/json:
         schema:
           $ref: "../components/schemas.yaml#/CreateNotificationRequest"
+        examples:
+          dengueCompleto:
+            summary: Exemplo completo para atualização de notificação
+            value:
+              patient_id: 55
+              unit_id: 12
+              status: "published"
+              notification_type_slug: "dengue"
+              notification_date: "2026-06-25"
+              occurrence_date: "2026-06-20"
+              notes: "Paciente reavaliado e caso encerrado."
+              specific_fields:
+                dt_investigation: "2026-06-21"
+                occupation: "Técnico de enfermagem"
+                st_fever: "no"
+                st_myalgia: "no"
+                st_headache: "no"
+                st_severe_arthralgia: "yes"
+                dt_den_ns1: "2026-06-22"
+                res_den_ns1: "reactive"
+                st_hospitalization: "unknown"
+                tp_final_classification: "11"
+                tp_evolution: "1"
+                dt_closing: "2026-07-01"
   responses:
     # --- SUCCESS RESPONSE ---
     "200":
@@ -83,6 +102,8 @@ delete:
   tags:
     - Notificações (Geral)
   operationId: excluirNotificacaoPorID
+  parameters:
+    - $ref: "../components/parameters.yaml#/PathId"
   responses:
     # --- SUCCESS WITH NO CONTENT RESPONSE ---
     "204":
