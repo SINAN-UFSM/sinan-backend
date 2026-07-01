@@ -1,75 +1,105 @@
 # --- PATIENT SCHEMA ---
-PatientResponse:
+PatientBase:
   type: object
   required:
-    - id
     - name
-    - cpf
+    - document
+    - birth_date
+    - birth_city
+    - sus_card
+    - race_color
+    - gender
+    - education_level
   properties:
-    id:
-      type: integer
-      description: ID único do paciente.
-      example: 105
     name:
       type: string
       description: Nome completo do paciente.
       example: "João da Silva"
-    cpf:
-      type: string
-      description: CPF do paciente (apenas números).
-      example: "12345678900"
-      pattern: "^[0-9]{11}$"
-    created_at:
-      type: string
-      format: date-time
-      description: Data e hora do cadastro no sistema.
-      example: "2026-06-25T22:30:00Z"
-    updated_at:
-      type: string
-      format: date-time
-      description: Data e hora da última atualização.
-      example: "2026-06-25T22:30:00Z"
-
-PatientCreateRequest:
-  type: object
-  required:
-    - name
-    - cpf
-  properties:
-    name:
-      type: string
-      description: Nome completo do paciente para cadastro.
-      example: "Maria Oliveira"
-    cpf:
+    document:
       type: string
       description: CPF válido (apenas números).
-      example: "09876543211"
+      example: "12345678900"
       pattern: "^[0-9]{11}$"
+    sus_card:
+      type: string
+      description: Número do cartão SUS do paciente.
+      example: "123456789012345"
+    birth_date:
+      type: string
+      format: date
+      description: Data de nascimento do paciente.
+      example: "1990-05-15"
+    birth_city:
+      type: string
+      description: Cidade de nascimento do paciente.
+      example: "Rio de Janeiro"
+    phone:
+      type: string
+      nullable: true
+      description: Número de telefone do paciente (opcional).
+      example: "+55 11 91234-5678"
+    gender:
+      type: string
+      description: Gênero do paciente.
+      example: "Masculino"
+    education_level:
+      type: string
+      description: Nível de escolaridade do paciente.
+      example: "Superior Completo"
+    race_color:
+      type: string
+      description: Raça/cor autodeclarada do paciente.
+      example: "Branca"
+    current_address:
+      type: string
+      nullable: true
+      description: Endereço atual do paciente (opcional).
+      example: "Rua das Flores, 123, Bairro Jardim, São Paulo - SP"
+
+PatientResponse:
+  allOf:
+    - $ref: "#/PatientBase"
+    - type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: ID único do paciente.
+          example: 105
+        is_active:
+          type: boolean
+          description: Indica se o paciente está ativo no cadastro lógico.
+          example: true
+
+PatientCreateRequest:
+  allOf:
+    - $ref: "#/PatientBase"
 
 PatientUpdateRequest:
-  type: object
-  required:
-    - name
-  properties:
-    name:
-      type: string
-      description: Nome completo do paciente para atualização.
-      example: "João da Silva Souza"
-    cpf:
-      type: string
-      description: CPF do paciente (caso seja permitida a alteração ou validação).
-      example: "12345678900"
+  allOf:
+    - $ref: "#/PatientBase"
 
 # --- UNITS SCHEMA ---
 UnitBase:
   type: object
   required:
     - name
+    - city
+    - state
   properties:
     name:
       type: string
       description: Nome oficial da unidade de saúde.
       example: "UPA 24h - Centro"
+    city:
+      type: string
+      description: Cidade onde a unidade está localizada.
+      example: "São Paulo"
+    state:
+      type: string
+      description: Estado onde a unidade está localizada (sigla).
+      example: "SP"
 
 UnitResponse:
   allOf:
@@ -80,6 +110,10 @@ UnitResponse:
           type: integer
           description: ID único da unidade (gerado pelo banco).
           example: 12
+        is_active:
+          type: boolean
+          description: Indica se a unidade está ativa no cadastro lógico.
+          example: true
 
 UnitCreateRequest:
   allOf:
