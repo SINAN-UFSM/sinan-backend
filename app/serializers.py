@@ -50,9 +50,29 @@ class PatientSerializer(serializers.ModelSerializer):
 # --- EPIDEMIOLOGICAL NOTIFICATION SERIALIZERS ---
 
 class NotificationSerializer(serializers.ModelSerializer):
+    patient_id = serializers.IntegerField(source='patient_id')
+    unit_id = serializers.IntegerField(source='unit_id')
+    user_id = serializers.IntegerField(
+        source='user_id',
+        read_only=True,
+        help_text='Read-only field set by the authenticated user.',
+    )
+
     class Meta:
         model = Notification
-        fields = '__all__'
+        fields = [
+            'id',
+            'patient_id',
+            'unit_id',
+            'user_id',
+            'status',
+            'notification_type_slug',
+            'notification_date',
+            'occurrence_date',
+            'notes',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'user_id', 'created_at']
 
 
 class AidsNotificationSerializer(serializers.ModelSerializer):

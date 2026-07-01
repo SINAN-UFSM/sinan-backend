@@ -155,6 +155,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated]
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class AidsNotificationViewSet(viewsets.ModelViewSet):
     queryset = AidsNotification.objects.all()
