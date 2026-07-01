@@ -134,7 +134,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'cpf']
+    search_fields = ['name', 'document']
     http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
 
     def destroy(self, request, *args, **kwargs):

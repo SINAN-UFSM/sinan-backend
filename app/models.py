@@ -5,6 +5,8 @@ from django.db import models
 
 class Unit(models.Model):
     name = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=2)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -31,7 +33,9 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         unit_admin, _ = Unit.objects.get_or_create(
-            name="Central Administration Unit"
+            name="Central Administration Unit",
+            city="Central City",
+            state="CC"
         )
         extra_fields.setdefault('unit', unit_admin)
 
@@ -57,7 +61,7 @@ class User(AbstractUser):
 
 class Patient(models.Model):
     # Immutable and reference data
-    cpf = models.CharField(max_length=14, unique=True)
+    document = models.CharField(max_length=14, unique=True)
     birth_date = models.DateField()
     birth_city = models.CharField(max_length=100)
     sus_card = models.CharField(max_length=20)
@@ -68,10 +72,11 @@ class Patient(models.Model):
     gender = models.CharField(max_length=50)
     education_level = models.CharField(max_length=100)
     current_address = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.name} ({self.cpf})"
+        return f"{self.name} ({self.document})"
 
 
 class Notification(models.Model):
@@ -94,7 +99,7 @@ class BaseNotification(models.Model):
     notification = models.OneToOneField(Notification, primary_key=True, on_delete=models.CASCADE)
 
     # Snapshot of Immutable Data
-    cpf_snapshot = models.CharField(max_length=14)
+    document_snapshot = models.CharField(max_length=14)
     birth_date_snapshot = models.DateField()
     birth_city_snapshot = models.CharField(max_length=100)
     sus_card_snapshot = models.CharField(max_length=20)
@@ -105,6 +110,7 @@ class BaseNotification(models.Model):
     gender_snapshot = models.CharField(max_length=50)
     education_level_snapshot = models.CharField(max_length=100)
     address_snapshot = models.TextField()
+    phone_snapshot = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         abstract = True
