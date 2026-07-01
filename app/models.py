@@ -164,12 +164,45 @@ class YellowFeverNotification(BaseNotification):
 
 
 class DengueChikungunyaNotification(BaseNotification):
-    has_fever = models.CharField(max_length=50)
-    has_severe_arthralgia = models.CharField(max_length=50)
-    chik_s1_result = models.CharField(max_length=50)
-    ns1_result = models.CharField(max_length=50)
-    classification_type = models.CharField(max_length=100)
-    has_shock = models.CharField(max_length=50)
+    occupation = models.CharField(max_length=255, blank=True, null=True)
+    dt_investigation = models.DateField(blank=True, null=True)
+
+    st_fever = models.CharField(max_length=50, blank=True, null=True)
+    st_myalgia = models.CharField(max_length=50, blank=True, null=True)
+    st_headache = models.CharField(max_length=50, blank=True, null=True)
+    st_exanthema = models.CharField(max_length=50, blank=True, null=True)
+    st_vomiting = models.CharField(max_length=50, blank=True, null=True)
+    st_nausea = models.CharField(max_length=50, blank=True, null=True)
+    st_back_pain = models.CharField(max_length=50, blank=True, null=True)
+    st_conjunctivitis = models.CharField(max_length=50, blank=True, null=True)
+    st_arthritis = models.CharField(max_length=50, blank=True, null=True)
+    st_severe_arthralgia = models.CharField(max_length=50, blank=True, null=True)
+    st_petechiae = models.CharField(max_length=50, blank=True, null=True)
+    st_leukopenia = models.CharField(max_length=50, blank=True, null=True)
+    st_tourniquet_test = models.CharField(max_length=50, blank=True, null=True)
+    st_retroorbital_pain = models.CharField(max_length=50, blank=True, null=True)
+
+    dt_den_ns1 = models.DateField(blank=True, null=True)
+    res_den_ns1 = models.CharField(max_length=100, blank=True, null=True)
+    dt_den_igm = models.DateField(blank=True, null=True)
+    res_den_igm = models.CharField(max_length=100, blank=True, null=True)
+    dt_chik_igm_s1 = models.DateField(blank=True, null=True)
+    res_chik_igm_s1 = models.CharField(max_length=100, blank=True, null=True)
+    dt_chik_igm_s2 = models.DateField(blank=True, null=True)
+
+    st_hospitalization = models.CharField(max_length=50, blank=True, null=True)
+    dt_hospitalization = models.DateField(blank=True, null=True)
+    st_autochthonous = models.CharField(max_length=50, blank=True, null=True)
+
+    tp_final_classification = models.CharField(max_length=100, blank=True, null=True)
+    tp_confirmation_criteria = models.CharField(max_length=100, blank=True, null=True)
+    tp_clinical_presentation = models.CharField(max_length=100, blank=True, null=True)
+    tp_evolution = models.CharField(max_length=100, blank=True, null=True)
+    dt_closing = models.DateField(blank=True, null=True)
+    additional_observations = models.TextField(blank=True, null=True)
+
+    # Retained for compatibility with previous front payloads.
+    st_shock = models.CharField(max_length=50, blank=True, null=True)
 
 
 class VenomousAnimalNotification(BaseNotification):

@@ -23,7 +23,7 @@ PatientBase:
     sus_card:
       type: string
       description: Número do cartão SUS do paciente.
-      example: "123456789012345"
+      example: "^[0-9]{15}$"
     birth_date:
       type: string
       format: date
@@ -145,6 +145,7 @@ NotificationBase:
   required:
     - patient_id
     - unit_id
+    - status
     - notification_date
     - occurrence_date
     - notification_type_slug
@@ -157,6 +158,15 @@ NotificationBase:
       type: integer
       description: ID da unidade de saúde.
       example: 12
+    user_id:
+      type: integer
+      readOnly: true
+      description: ID do usuário responsável pelo registro (definido pelo backend).
+      example: 7
+    status:
+      type: string
+      description: Status atual da notificação.
+      example: "draft"
     notification_type_slug:
       type: string
       description: Identificador do agravo.
@@ -173,6 +183,7 @@ NotificationBase:
       example: "2026-06-20"
     notes:
       type: string
+      nullable: true
       description: Observações adicionais sobre a notificação.
       example: "Paciente internado."
 
@@ -204,10 +215,11 @@ NotificationResponse:
           type: integer
           description: ID único da notificação (gerado pelo sistema).
           example: 1042
-        status:
+        created_at:
           type: string
-          description: Status atual da notificação.
-          example: "confirmado"
+          format: date-time
+          description: Data/hora de criação da notificação.
+          example: "2026-07-01T10:30:00Z"
 
 PaginatedNotificationList:
   type: object
@@ -220,7 +232,7 @@ PaginatedNotificationList:
       type: string
       nullable: true
       description: URL para a próxima página.
-      example: "http://localhost:8000/api/v1/notificacoes/?page=2"
+      example: "http://localhost:8000/api/v1/notifications?page=2"
     previous:
       type: string
       nullable: true
@@ -235,33 +247,30 @@ PaginatedNotificationList:
 DengueSpecificFields:
   type: object
   properties:
-    st_fever:
-      type: boolean
-      example: true
-    st_arthralgia_intense:
-      type: boolean
-      example: true
-    st_result_chik_s1:
+    has_fever:
       type: string
-      enum: [nao_realizado, reagente, nao_reagente, inconclusivo]
-      example: "nao_realizado"
-    st_result_ns1:
+      description: Indica presença de febre.
+      example: "yes"
+    has_severe_arthralgia:
       type: string
-      enum: [nao_realizado, reagente, nao_reagente]
-      example: "reagente"
-    tp_classification:
+      description: Indica presença de artralgia intensa.
+      example: "yes"
+    chik_s1_result:
       type: string
-      enum:
-        [
-          dengue_classica,
-          dengue_com_sinais_de_alarme,
-          dengue_grave,
-          chikungunya,
-        ]
-      example: "dengue_com_sinais_de_alarme"
-    st_shock:
-      type: boolean
-      example: false
+      description: Resultado do exame CHIK S1.
+      example: "non_reactive"
+    ns1_result:
+      type: string
+      description: Resultado do exame NS1.
+      example: "reactive"
+    classification_type:
+      type: string
+      description: Classificação final do caso.
+      example: "dengue_with_warning_signs"
+    has_shock:
+      type: string
+      description: Indica presença de choque.
+      example: "no"
 
 DengueCreateRequest:
   allOf:
@@ -281,17 +290,18 @@ DengueCreateRequest:
   example:
     patient_id: 55
     unit_id: 12
+    status: "draft"
     notification_type_slug: "dengue"
     notification_date: "2026-06-25"
     occurrence_date: "2026-06-20"
     notes: "Paciente internado."
     specific_fields:
-      st_fever: true
-      st_arthralgia_intense: true
-      st_result_chik_s1: "nao_realizado"
-      st_result_ns1: "reagente"
-      tp_classification: "dengue_com_sinais_de_alarme"
-      st_shock: false
+      has_fever: "yes"
+      has_severe_arthralgia: "yes"
+      chik_s1_result: "non_reactive"
+      ns1_result: "reactive"
+      classification_type: "dengue_with_warning_signs"
+      has_shock: "no"
 
 DengueNotificationResponse:
   allOf:
@@ -302,17 +312,19 @@ DengueNotificationResponse:
           $ref: "#/DengueSpecificFields"
   example:
     id: 1042
-    status: "confirmado"
     patient_id: 55
     unit_id: 12
+    user_id: 7
+    status: "published"
     notification_type_slug: "dengue"
     notification_date: "2026-06-25"
     occurrence_date: "2026-06-20"
     notes: "Paciente internado."
+    created_at: "2026-07-01T10:30:00Z"
     specific_fields:
-      st_fever: true
-      st_arthralgia_intense: true
-      st_result_chik_s1: "nao_realizado"
-      st_result_ns1: "reagente"
-      tp_classification: "dengue_com_sinais_de_alarme"
-      st_shock: false
+      has_fever: "yes"
+      has_severe_arthralgia: "yes"
+      chik_s1_result: "non_reactive"
+      ns1_result: "reactive"
+      classification_type: "dengue_with_warning_signs"
+      has_shock: "no"

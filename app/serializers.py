@@ -50,9 +50,48 @@ class PatientSerializer(serializers.ModelSerializer):
 # --- EPIDEMIOLOGICAL NOTIFICATION SERIALIZERS ---
 
 class NotificationSerializer(serializers.ModelSerializer):
+    patient_id = serializers.IntegerField()
+    unit_id = serializers.IntegerField()
+    user_id = serializers.IntegerField(
+        read_only=True,
+        help_text='Read-only field set by the authenticated user.',
+    )
+    specific_fields = serializers.SerializerMethodField()
+
     class Meta:
         model = Notification
-        fields = '__all__'
+        fields = [
+            'id',
+            'patient_id',
+            'unit_id',
+            'user_id',
+            'status',
+            'notification_type_slug',
+            'notification_date',
+            'occurrence_date',
+            'notes',
+            'created_at',
+            'specific_fields',
+        ]
+        read_only_fields = ['id', 'user_id', 'created_at', 'specific_fields']
+
+    def get_specific_fields(self, obj):
+        """Return specific_fields from related polymorphic notification model."""
+        from .notifications.polymorphic import POLYMORPHIC_REGISTRY
+        
+        polymorphic_config = POLYMORPHIC_REGISTRY.get(obj.notification_type_slug)
+        if not polymorphic_config:
+            return {}
+        
+        specific_model = polymorphic_config['specific_model']
+        try:
+            specific_instance = specific_model.objects.get(notification=obj)
+            return {
+                field_alias: getattr(specific_instance, field_name, None)
+                for field_alias, field_name in polymorphic_config.get('field_aliases', {}).items()
+            }
+        except specific_model.DoesNotExist:
+            return {}
 
 
 class AidsNotificationSerializer(serializers.ModelSerializer):
