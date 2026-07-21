@@ -1,0 +1,5 @@
+language: "pt-BR"
+tone_instructions: "Seja direto, profissional e focado em boas práticas de TypeScript e Node.js."
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
