@@ -7,8 +7,7 @@
 .venv/
 venv
 
-# --- PYTHON ---
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
+# --- TS/JS ---
+.tsbuildinfo
+node_modules/
+dist/

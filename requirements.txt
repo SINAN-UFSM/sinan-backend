@@ -1,7 +1,0 @@
-Django==6.0.4
-python-dotenv==1.1.1
-psycopg[binary]
-djangorestframework-simplejwt
-djangorestframework
-django-cors-headers
-drf-spectacular

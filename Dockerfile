@@ -1,40 +1,35 @@
-FROM python:3.13-slim AS builder
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# First Stage: Build and Compile Typescript
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+RUN npm ci
 
+COPY . .
 
-FROM python:3.13-slim AS runner
+RUN npm run build
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Second Stage: Create the final image
+FROM node:22-slim AS runner
+
+ENV NODE_ENV=production
 ENV PORT=8000
 
-ENV PATH="/home/appuser/.local/bin:${PATH}"
-
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq5 \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m -u 8888 appuser
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 
-COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
-COPY --chown=appuser:appuser . .
+COPY --from=builder --chown=node:node /app/dist ./dist
 
-USER appuser
+USER node
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["node", "dist/main.js"]
