@@ -16,13 +16,13 @@
         ],
         "paths": {
             "#*": [
-                "./src/*",
+                "./src/*.ts",
             ],
         },
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noEmitOnError": true,
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
     },
     "include": [
         "src"
