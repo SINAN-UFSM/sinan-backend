@@ -28,6 +28,14 @@ class User {
         return new User(userProps);
     }
 
+    public static reconstitute(props: UserProps): User {
+        return new User(props);
+    }
+
+    get id(): string | undefined {
+        return this.props.id;
+    }
+
     get name(): string {
         return this.props.name;
     }

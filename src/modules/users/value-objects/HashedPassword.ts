@@ -13,6 +13,10 @@ class HashedPassword {
         return new HashedPassword(hashedPassword);
     }
 
+    public static fromPersisted(existingHash: string): HashedPassword {
+        return new HashedPassword(existingHash);
+    }
+
     private static validatePassword(plainPassword: string): void {
         if (plainPassword.length < 8) {
             throw new Error('Password must be at least 8 characters long');
