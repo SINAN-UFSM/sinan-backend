@@ -6,7 +6,7 @@ import {
     ForbiddenError,
 } from '#errors/HttpErrors';
 
-export const errorHandler = (
+const errorHandler = (
     err: Error,
     _req: Request,
     res: Response,
@@ -28,3 +28,5 @@ export const errorHandler = (
     console.error('[Unhandled Error]:', err);
     return res.status(500).json({ error: 'Internal server error' });
 };
+
+export { errorHandler };
