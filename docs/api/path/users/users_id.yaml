@@ -1,0 +1,88 @@
+# ENDPOINT /users/{id}
+
+# PATCH REQUEST
+patch:
+  summary: Atualiza as informações de um usuário existente.
+  description: Atualiza as informações de um usuário existente com base no ID fornecido.
+  operationId: atualizarUsuario
+  tags:
+    - Usuários
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID do usuário a ser atualizado.
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas.yaml#/UserUpdateRequest"
+  responses:
+    "200":
+      description: Usuário atualizado com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas.yaml#/UserResponse"
+    "400":
+      description: Requisição inválida.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/400"
+    "401":
+      description: Não autorizado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/401"
+    "403":
+      description: Acesso negado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/403"
+    "404":
+      description: Usuário não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/404"
+
+delete:
+  summary: Deleta um usuário existente.
+  description: Deleta um usuário existente com base no ID fornecido.
+  operationId: deletarUsuario
+  tags:
+    - Usuários
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID do usuário a ser deletado.
+      schema:
+        type: string
+  responses:
+    "204":
+      description: Usuário deletado com sucesso.
+    "401":
+      description: Não autorizado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/401"
+    "403":
+      description: Acesso negado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/403"
+    "404":
+      description: Usuário não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/errors.yaml#/responses/404"

@@ -1,9 +1,10 @@
 import { HashedPassword } from '#modules/users/value-objects/HashedPassword';
+import type { Email } from '#modules/users/value-objects/Email';
 
 type UserProps = {
     id?: string;
     name: string;
-    email: string;
+    email: Email;
     hashedPassword: HashedPassword;
     role: 'admin' | 'user';
     unitId: number;
@@ -11,12 +12,11 @@ type UserProps = {
 
 class User {
     private readonly props: UserProps;
-
     private constructor(props: UserProps) {
         this.props = props;
     }
 
-    public static create(name: string, email: string, hashedPassword: HashedPassword, role: 'admin' | 'user', unitId: number): User {
+    public static create(name: string, email: Email, hashedPassword: HashedPassword, role: 'admin' | 'user', unitId: number): User {
 
         const userProps: UserProps = {
             name,
@@ -40,7 +40,7 @@ class User {
         return this.props.name;
     }
 
-    get email(): string {
+    get email(): Email {
         return this.props.email;
     }
 

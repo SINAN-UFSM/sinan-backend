@@ -1,0 +1,35 @@
+#ENDPOINT /users
+
+# POST REQUEST
+post:
+  summary: Cria um novo usuário no sistema.
+  description: Cria um novo usuário no sistema com base nas informações fornecidas.
+  operationId: criarUsuario
+  tags:
+    - Usuários
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas.yaml#/UserCreateRequest"
+  responses:
+    # --- CREATED RESPONSE ---
+    "201":
+      description: Usuário criado com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas.yaml#/UserResponse"
+    # --- BAD REQUEST RESPONSE ---
+    "400":
+      $ref: "../components/errors.yaml#/responses/400"
+    # --- UNAUTHORIZED ACCESS RESPONSE ---
+    "401":
+      $ref: "../components/errors.yaml#/responses/401"
+    # --- FORBIDDEN ACCESS RESPONSE ---
+    "403":
+      $ref: "../components/errors.yaml#/responses/403"
+    # --- INTERNAL SERVER ERROR RESPONSE ---
+    "500":
+      $ref: "../components/errors.yaml#/responses/500"

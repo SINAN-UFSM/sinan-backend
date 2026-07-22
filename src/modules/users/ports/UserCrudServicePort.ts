@@ -1,6 +1,3 @@
-import type { User } from '#modules/users/entities/User';
-
-
 type CreateUserDTO = {
     name: string;
     email: string;
@@ -12,13 +9,20 @@ type CreateUserDTO = {
 type UpdateUserDTO = {
     name?: string;
     email?: string;
-    role?: 'admin' | 'user';
-    unitId?: number;
+    password?: string;
 };
 
+type UserResponseDTO = {
+    id: string;
+    name: string;
+    email: string;
+    role: 'admin' | 'user';
+    unitId: number;
+};
 interface UserCrudServicePort {
-    createUser(user: CreateUserDTO): Promise<User>;
-    updateUser(id: string, user: UpdateUserDTO): Promise<User>;
+    createUser(user: CreateUserDTO): Promise<UserResponseDTO>;
+    updateUser(id: string, user: UpdateUserDTO): Promise<UserResponseDTO>;
+    deleteUser(id: string): Promise<void>;
 }
 
-export type { CreateUserDTO, UpdateUserDTO, UserCrudServicePort };
+export type { CreateUserDTO, UpdateUserDTO, UserResponseDTO, UserCrudServicePort };

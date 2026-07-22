@@ -27,9 +27,11 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/docs ./docs
+COPY --from=builder --chown=node:node /app/drizzle ./drizzle
 
 USER node
 
 EXPOSE 8000
 
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "node dist/infra/database/drizzle/setup-db.js && node dist/index.js"]
