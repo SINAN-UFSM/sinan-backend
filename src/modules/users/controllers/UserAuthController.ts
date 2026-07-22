@@ -1,5 +1,5 @@
 import type { UserAuthServicePort, LoginRequestDTO, LoginResponseDTO } from '#modules/users/ports/UserAuthServicePort';
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 class UserAuthController {
     private userAuthService: UserAuthServicePort;
@@ -8,7 +8,7 @@ class UserAuthController {
         this.userAuthService = userAuthService;
     }
 
-    async login(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const request: LoginRequestDTO = {
                 email: req.body.email,
@@ -28,7 +28,7 @@ class UserAuthController {
         }
     }
 
-    async logout(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const refreshToken = req.body.refresh;
 
@@ -40,12 +40,12 @@ class UserAuthController {
             await this.userAuthService.logout(refreshToken);
             res.status(200).json({ message: 'Logged out successfully' });
             return;
-        } catch (error: any) {
+        } catch (error: unknown) {
             next(error);
         }
     }
 
-    async refresh(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const oldRefreshToken = req.body.refresh;
 
@@ -56,8 +56,8 @@ class UserAuthController {
 
             const response: LoginResponseDTO = await this.userAuthService.refresh(oldRefreshToken);
             res.status(200).json(response);
-            return
-        } catch (error: any) {
+            return;
+        } catch (error: unknown) {
             next(error);
         }
     }

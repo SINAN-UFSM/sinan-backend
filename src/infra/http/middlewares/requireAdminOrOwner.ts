@@ -27,7 +27,7 @@ export const requireAdminOrOwner = (req: Request, res: Response, next: NextFunct
         };
 
         next();
-    } catch (error) {
+    } catch {
         return res.status(401).json({ error: 'Invalid or expired token' });
     }
 };

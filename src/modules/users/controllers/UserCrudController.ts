@@ -1,6 +1,6 @@
 import type { UserCrudServicePort, CreateUserDTO } from '#modules/users/ports/UserCrudServicePort';
 
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 class UserCrudController {
     private readonly service: UserCrudServicePort;
@@ -9,7 +9,7 @@ class UserCrudController {
         this.service = service;
     }
 
-    public async createUser(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    public async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const missingFields: string[] = [];
             if (!req.body.name) missingFields.push('name');
@@ -38,13 +38,13 @@ class UserCrudController {
 
             res.status(201).json(user);
             return;
-        } catch (error: any) {
+        } catch (error: unknown) {
             next(error);
         }
     }
 
 
-    public async updateUser(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    public async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const userId = req.params.id as string;
 
@@ -61,19 +61,19 @@ class UserCrudController {
 
             res.status(200).json(updatedUser);
             return;
-        } catch (error: any) {
+        } catch (error: unknown) {
             next(error);
         }
     }
 
-    public async deleteUser(req: Request, res: Response, next: (error: any) => void): Promise<void> {
+    public async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const userId = req.params.id as string;
             await this.service.deleteUser(userId);
 
             res.status(204).send();
             return;
-        } catch (error: any) {
+        } catch (error: unknown) {
             next(error);
         }
     }
