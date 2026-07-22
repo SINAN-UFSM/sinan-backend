@@ -23,7 +23,7 @@ class UserAuthController {
             const response: LoginResponseDTO = await this.userAuthService.login(request);
             res.status(200).json(response);
             return;
-        } catch (error: any) {
+        } catch (error: unknown) {
             next(error);
         }
     }
