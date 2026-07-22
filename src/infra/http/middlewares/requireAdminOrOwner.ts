@@ -23,7 +23,7 @@ export const requireAdminOrOwner = (req: Request, res: Response, next: NextFunct
 
         req.user = {
             id: decoded.sub,
-            role: decoded.role
+            role: decoded.role as "admin" | "user"
         };
 
         next();
