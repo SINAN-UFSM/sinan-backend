@@ -9,6 +9,6 @@ export default defineConfig({
     out: './drizzle',
 
     dbCredentials: {
-        url: process.env.DATABASE_URL || 'postgres://admin:senha_super_secreta@localhost:5432/sinan_db',
+        url: process.env.DATABASE_URL ?? (() => { throw new Error('DATABASE_URL is not defined'); })(),
     },
 });
