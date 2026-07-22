@@ -24,9 +24,9 @@ servers:
     description: Escolha o ambiente da API SINAN
     variables:
       environment:
-        default: https://api.sinan.gov.br
+        default: https://sinan.gov.br
         enum:
-          - https://api.sinan.gov.br
+          - https://sinan.gov.br
           - http://localhost:8000
         description: Ambientes disponíveis para integração
 paths:
@@ -53,6 +53,12 @@ paths:
     $ref: path/notifications/notifications.yaml
   /api/v1/notifications/{id}:
     $ref: path/notifications/notifications_id.yaml
+
+  # --- USERS ENDPOINTS ---
+  /api/v1/users:
+    $ref: path/users/users.yaml
+  /api/v1/users/{id}:
+    $ref: path/users/users_id.yaml
 
 components:
   securitySchemes:
