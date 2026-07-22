@@ -1,4 +1,4 @@
-import type { CreateUserDTO, UpdateUserDTO, UserResponseDTO, UserCrudServicePort } from '#modules/users/ports/UserCrudServicePort';
+import type { CreateUserDTO, UserResponseDTO, UpdateUserDTO, UserCrudServicePort } from '#modules/users/ports/UserCrudServicePort';
 import type { UserRepositoryPort } from '#modules/users/ports/UserRepositoryPort';
 
 import { User, type UserProps } from "#modules/users/entities/User";
@@ -56,13 +56,15 @@ class UserCrudService implements UserCrudServicePort {
                 throw new BadRequestError('Email is already in use by another account');
             }
         }
-        const partialProps: Partial<UserProps> = {
+        const userProps: Partial<UserProps> = {
             name: userDTO.name,
             email: email,
             hashedPassword: hashedPassword,
+            role: userDTO.role,
+            unitId: userDTO.unitId
         };
 
-        const updatedUser = await this.userRepository.update(id, partialProps);
+        const updatedUser = await this.userRepository.update(id, userProps);
 
         if (!updatedUser) {
             throw new BadRequestError('Failed to update user');

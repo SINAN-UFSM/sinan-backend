@@ -6,12 +6,6 @@ type CreateUserDTO = {
     unitId: number;
 };
 
-type UpdateUserDTO = {
-    name?: string;
-    email?: string;
-    password?: string;
-};
-
 type UserResponseDTO = {
     id: string;
     name: string;
@@ -19,10 +13,13 @@ type UserResponseDTO = {
     role: 'admin' | 'user';
     unitId: number;
 };
+
+type UpdateUserDTO = Partial<CreateUserDTO>;
+
 interface UserCrudServicePort {
     createUser(user: CreateUserDTO): Promise<UserResponseDTO>;
     updateUser(id: string, user: UpdateUserDTO): Promise<UserResponseDTO>;
     deleteUser(id: string): Promise<void>;
 }
 
-export type { CreateUserDTO, UpdateUserDTO, UserResponseDTO, UserCrudServicePort };
+export type { CreateUserDTO, UserResponseDTO, UpdateUserDTO, UserCrudServicePort };
