@@ -30,8 +30,8 @@ src/
 └── modules/
     └── users/
         ├── entities/         # Entidades puras
-        ├── Services/         # Casos de Uso
-        ├── repository/       # Contém o adapter do ORM
+        ├── services/         # Casos de Uso
+        ├── repositories/     # Contém o adapter do ORM
         ├── ports/            # Interfaces (Driven/Driving ports)
         ├── factories/        # Composição de dependências
         └── controllers/      # Implementação dos adapters HTTP

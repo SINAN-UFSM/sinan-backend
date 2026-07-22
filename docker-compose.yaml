@@ -40,7 +40,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
 
       # --- DATABASE CONFIG ---
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
@@ -60,6 +60,11 @@ services:
         condition: service_healthy
     networks:
       - sinan_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 volumes:
   sinan_pg_data:
 

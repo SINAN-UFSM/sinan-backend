@@ -34,4 +34,7 @@ USER node
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "node dist/infra/database/drizzle/setup-db.js && node dist/index.js"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=5 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["sh", "-c", "node dist/infra/database/drizzle/setup-db.js && exec node dist/index.js"]
