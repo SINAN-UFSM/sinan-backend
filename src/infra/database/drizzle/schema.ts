@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, pgEnum, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, pgEnum, timestamp, boolean, index } from 'drizzle-orm/pg-core';
 import { text } from 'drizzle-orm/pg-core';
 
 const roleEnum = pgEnum('role', ['admin', 'user']);
@@ -21,7 +21,9 @@ const refreshTokensTable = pgTable('refresh_tokens', {
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     revoked: boolean('revoked').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+}, (table) => [
+    index('token_hash_index').on(table.tokenHash),
+]);
 
 type DbUser = typeof usersTable.$inferSelect;
 type DbUserInsert = typeof usersTable.$inferInsert;
