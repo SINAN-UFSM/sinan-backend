@@ -4,7 +4,7 @@
 # ENDPOINT /users/{id}
 patch:
   summary: Atualiza as informações de um usuário existente.
-  description: Atualiza campos do usuário. O middleware restringe alterações sensíveis (como role e unit_id) para não-administradores.
+  description: Atualiza campos do usuário. O middleware restringe alterações sensíveis (como role, unit_id e name) para não-administradores.
   operationId: atualizarUsuario
   tags:
     - Usuários

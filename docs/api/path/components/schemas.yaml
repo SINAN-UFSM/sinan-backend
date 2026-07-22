@@ -54,7 +54,9 @@ UserCreateRequest:
         password:
           type: string
           format: password
-          description: Senha do usuário.
+          minLength: 8
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$'
+          description: Senha do usuário. Deve conter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo.
           example: "securePassword123@"
         role:
           type: string
@@ -73,7 +75,7 @@ UserUpdateRequest:
   properties:
     name:
       type: string
-      description: Nome completo do usuário.
+      description: Nome completo do usuário. (requer privilégios de admin).
       example: "John Doe"
     email:
       type: string
@@ -83,8 +85,10 @@ UserUpdateRequest:
     password:
       type: string
       format: password
-      description: Nova senha do usuário (opcional).
       example: "newSecurePassword456@"
+      minLength: 8
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$'
+      description: Senha do usuário. Deve conter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo.
     role:
       type: string
       description: Papel do usuário (requer privilégios de admin).
