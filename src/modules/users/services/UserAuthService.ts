@@ -75,7 +75,7 @@ class UserAuthService implements UserAuthServicePort {
             throw new UnauthorizedError('Invalid or expired refresh token');
         }
 
-        const user = await this.userRepository.findById(storedToken.userId);
+        const user = await this.userRepository.findById(storedToken.UserId);
         if (!user) {
             throw new UnauthorizedError('User not found');
         }

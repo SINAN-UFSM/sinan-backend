@@ -11,9 +11,6 @@
         "moduleResolution": "nodenext",
         "rootDir": "./src",
         "outDir": "./dist",
-        "types": [
-            "node"
-        ],
         "paths": {
             "#*": [
                 "./src/*.ts",
