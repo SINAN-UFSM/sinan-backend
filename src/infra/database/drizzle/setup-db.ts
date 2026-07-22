@@ -1,19 +1,31 @@
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import bcrypt from 'bcrypt';
-import { db } from '#infra/database/drizzle/connection';
+import { db, pool } from '#infra/database/drizzle/connection';
 import { usersTable } from '#infra/database/drizzle/schema';
+import { eq } from 'drizzle-orm';
 
 async function setupDatabase() {
     console.log('[Setup] Running database migrations...');
     await migrate(db, { migrationsFolder: './drizzle' });
     console.log('[Setup] Migrations applied successfully!');
 
-    const adminUsers = await db.select().from(usersTable).limit(1);
+    await db.transaction(async (tx) => {
+        await tx.execute(`SELECT pg_advisory_xact_lock(999999);`);
 
-    if (adminUsers.length === 0) {
+        const existingAdmins = await tx
+            .select()
+            .from(usersTable)
+            .where(eq(usersTable.role, 'admin'))
+            .limit(1);
+
+        if (existingAdmins.length > 0) {
+            console.log('[Setup] Administrator already exists. Seed skipped.');
+            return;
+        }
+
         console.log('[Setup] Database is empty. Creating the first administrator...');
-        const adminPassword = process.env.ADMIN_PASSWORD
-        const adminEmail = process.env.ADMIN_EMAIL
+        const adminPassword = process.env.ADMIN_PASSWORD;
+        const adminEmail = process.env.ADMIN_EMAIL;
 
         if (!adminPassword || !adminEmail) {
             throw new Error('ADMIN_PASSWORD and ADMIN_EMAIL must be defined in the environment variables');
@@ -34,25 +46,32 @@ async function setupDatabase() {
         if (!/[!@#$%^&*(),.?":{}|<>]/.test(adminPassword)) {
             throw new Error('Password must contain at least one special character');
         }
-        console.log('[Setup] First administrator created successfully!');
+
+        if (Buffer.byteLength(adminPassword, 'utf-8') > 72) {
+            throw new Error('Password must not exceed 72 bytes in length');
+        }
 
         const passwordHash = await bcrypt.hash(adminPassword, 10);
 
-        await db.insert(usersTable).values({
+        await tx.insert(usersTable).values({
             name: 'System Administrator',
             email: adminEmail,
             hashedPassword: passwordHash,
             role: 'admin',
             unitId: 1
-        });
-    } else {
-        console.log('[Setup] Database already has users. Seed skipped.');
-    }
+        }).onConflictDoNothing({ target: usersTable.email });
+
+        console.log('[Setup] First administrator created successfully!');
+    });
 }
 
 setupDatabase()
-    .then(() => process.exit(0))
-    .catch(err => {
+    .then(async () => {
+        await pool.end();
+        process.exit(0);
+    })
+    .catch(async err => {
         console.error('[Setup] Critical error while setting up database:', err);
+        await pool.end();
         process.exit(1);
     });
