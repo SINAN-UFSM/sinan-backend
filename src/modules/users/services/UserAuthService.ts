@@ -30,13 +30,6 @@ class UserAuthService implements UserAuthServicePort {
         }
 
         const isPasswordValid = await user.hashedPassword.compare(password);
-
-        // ------------------------ REMOVER-------------------------------
-        console.log({
-            inputPassword: password,
-            dbHash: user.hashedPassword.value,
-            isValid: isPasswordValid
-        });
         if (!isPasswordValid) {
             throw new UnauthorizedError('Invalid email or password');
         }
@@ -69,13 +62,13 @@ class UserAuthService implements UserAuthServicePort {
 
     public async refresh(oldRefreshToken: string): Promise<LoginResponseDTO> {
         const tokenHash = crypto.createHash('sha256').update(oldRefreshToken).digest('hex');
-        const storedToken = await this.refreshTokenRepository.findByHash(tokenHash);
+        const deletedToken = await this.refreshTokenRepository.consumeByHash(tokenHash);
 
-        if (!storedToken || storedToken.isExpired()) {
+        if (!deletedToken || deletedToken.isExpired()) {
             throw new UnauthorizedError('Invalid or expired refresh token');
         }
 
-        const user = await this.userRepository.findById(storedToken.UserId);
+        const user = await this.userRepository.findById(deletedToken.UserId);
         if (!user) {
             throw new UnauthorizedError('User not found');
         }
