@@ -1,4 +1,4 @@
-import { eq, ilike, or, and, count } from 'drizzle-orm';
+import { eq, ilike, or, and, count, asc } from 'drizzle-orm';
 import { State } from '#modules/units/value-objects/State';
 
 import { db } from '#infra/database/drizzle/connection';
@@ -29,6 +29,8 @@ class DrizzleUnitRepository {
     public async update(id: number, unit: Unit): Promise<Unit> {
         const updateData = {
             name: unit.name,
+            city: unit.city,
+            state: unit.state.value,
         };
 
         const [dbUnit] = await db.update(unitsTable)
@@ -103,7 +105,8 @@ class DrizzleUnitRepository {
             .from(unitsTable)
             .where(whereClause)
             .limit(limit)
-            .offset(offset);
+            .offset(offset)
+            .orderBy(asc(unitsTable.id));
 
         const units: Unit[] = dbUnits.map(row => {
             return this.mapToDomain(
