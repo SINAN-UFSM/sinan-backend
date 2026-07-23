@@ -16,7 +16,7 @@ class UserCrudController {
             if (!req.body.email) missingFields.push('email');
             if (!req.body.password) missingFields.push('password');
             if (!req.body.role) missingFields.push('role');
-            if (!req.body.unit_id) missingFields.push('unitId');
+            if (!req.body.unitId) missingFields.push('unitId');
 
             if (missingFields.length > 0) {
                 res.status(400).json({
@@ -30,7 +30,7 @@ class UserCrudController {
                 email: req.body.email,
                 password: req.body.password,
                 role: req.body.role,
-                unitId: req.body.unit_id
+                unitId: req.body.unitId
             };
             const user = await this.service.createUser(
                 userDTO
@@ -55,7 +55,7 @@ class UserCrudController {
                 // Only allow role, name and unitId updates if the requester is an admin
                 name: isAdmin ? req.body.name : undefined,
                 role: isAdmin ? req.body.role : undefined,
-                unitId: isAdmin ? req.body.unit_id : undefined
+                unitId: isAdmin ? req.body.unitId : undefined
             };
             const updatedUser = await this.service.updateUser(userId, userDTO);
 

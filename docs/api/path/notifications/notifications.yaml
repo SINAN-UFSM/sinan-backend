@@ -57,7 +57,7 @@ post:
             summary: Exemplo completo de notificação de Dengue/Chikungunya
             value:
               patient_id: 55
-              unit_id: 12
+              unitId: 12
               status: "draft"
               notification_type_slug: "dengue"
               notification_date: "2026-06-25"

@@ -11,22 +11,31 @@ import YAML from 'yamljs';
 
 import { makeUserCrudController } from '#modules/users/factories/makeUserCrudController';
 import { makeUserAuthController } from '#modules/users/factories/makeUserAuthController';
+import { makeUnitCrudController } from '#modules/units/factories/makeUnitCrudController';
+
+import { verifyBearerToken } from './middlewares/verifyBearerToken.js';
 
 import { requireAdmin } from './middlewares/requireAdmin.js';
 import { requireAdminOrOwner } from './middlewares/requireAdminOrOwner.js';
 
 const router = Router();
 
-const userController = makeUserCrudController();
-router.post('/api/v1/users', requireAdmin, userController.createUser.bind(userController));
-router.patch('/api/v1/users/:id', requireAdminOrOwner, userController.updateUser.bind(userController));
-router.delete('/api/v1/users/:id', requireAdminOrOwner, userController.deleteUser.bind(userController));
-
 const authController = makeUserAuthController();
 router.post('/api/v1/auth/login', authController.login.bind(authController));
 router.post('/api/v1/auth/logout', authController.logout.bind(authController));
 router.post('/api/v1/auth/refresh', authController.refresh.bind(authController));
 
+const userController = makeUserCrudController();
+router.post('/api/v1/users', verifyBearerToken, requireAdmin, userController.createUser.bind(userController));
+router.patch('/api/v1/users/:id', verifyBearerToken, requireAdminOrOwner, userController.updateUser.bind(userController));
+router.delete('/api/v1/users/:id', verifyBearerToken, requireAdminOrOwner, userController.deleteUser.bind(userController));
+
+const unitController = makeUnitCrudController();
+router.get('/api/v1/units', verifyBearerToken, unitController.getUnits.bind(unitController));
+router.post('/api/v1/units', verifyBearerToken, unitController.createUnit.bind(unitController));
+router.get('/api/v1/units/:id', verifyBearerToken, unitController.getUnit.bind(unitController));
+router.patch('/api/v1/units/:id', verifyBearerToken, unitController.updateUnit.bind(unitController));
+router.delete('/api/v1/units/:id', verifyBearerToken, unitController.deleteUnit.bind(unitController));
 
 router.get('/health', (_: Request, res: Response) => {
     return res.status(200).json(
@@ -38,18 +47,8 @@ router.get('/health', (_: Request, res: Response) => {
     );
 });
 
-
 const swaggerPath = path.resolve(process.cwd(), 'docs', 'api', 'api.yaml');
 const rawSwaggerDocument = YAML.load(swaggerPath);
-SwaggerParser.dereference(swaggerPath)
-    .then((swaggerDocument) => {
-        router.use('/api/docs', swaggerUi.serve);
-        router.get('/api/docs', swaggerUi.setup(swaggerDocument));
-    })
-    .catch((err) => {
-        console.error('Error trying to dereference Swagger document:', err);
-    });
-
 let swaggerSetupMiddleware = swaggerUi.setup(rawSwaggerDocument);
 
 SwaggerParser.dereference(swaggerPath)

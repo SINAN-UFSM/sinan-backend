@@ -23,8 +23,8 @@ get:
     "500":
       $ref: "../components/errors.yaml#/responses/500"
 
-# --- PUT METHOD ---
-put:
+# --- PATCH METHOD ---
+patch:
   summary: Atualizar unidade
   description: Altera os dados de uma unidade de saúde existente.
   operationId: atualizarUnidade

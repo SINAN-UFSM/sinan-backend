@@ -71,7 +71,7 @@ PatientIDParam:
     type: integer
   example: 42
 UnitIDParam:
-  name: unit_id
+  name: unitId
   in: query
   required: false
   description: Filtra por ID da unidade de saúde.

@@ -14,7 +14,14 @@ type UserResponseDTO = {
     unitId: number;
 };
 
-type UpdateUserDTO = Partial<CreateUserDTO>;
+type UpdateUserDTO = {
+    id?: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    role?: 'admin' | 'user';
+    unitId?: number;
+};
 
 interface UserCrudServicePort {
     createUser(user: CreateUserDTO): Promise<UserResponseDTO>;
