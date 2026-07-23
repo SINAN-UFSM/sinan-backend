@@ -38,7 +38,7 @@ class UnitCrudService implements UnitCrudServicePort {
             throw new NotFoundError(`Unit with ID ${unitDTO.id} not found`);
         }
         const unitName = unitDTO.name ?? existingUnit.name;
-        const state = unitDTO.state ? State.create(unitDTO.state) : existingUnit.state;
+        const state = unitDTO.state !== undefined ? State.create(unitDTO.state) : existingUnit.state;
         const unit = Unit.create({
             id: unitDTO.id,
             name: unitName,
