@@ -104,14 +104,23 @@ export class UnitCrudController {
 
     async getUnits(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            const { name, state, city, page, limit, search, isActive } = req.query;
+            const pageNumber = Number(page);
+            const limitNumber = Number(limit);
+            if (pageNumber < 1 || limitNumber < 1 || isNaN(pageNumber) || isNaN(limitNumber)) {
+                res.status(400).json({
+                    error: 'Invalid pagination parameters: page and limit must be positive integers.'
+                });
+                return;
+            }
             const queryDTO: ReadUnitsQueryDTO = {
-                name: req.query.name as string | undefined,
-                state: req.query.state as string | undefined,
-                city: req.query.city as string | undefined,
-                page: req.query.page ? Number(req.query.page) || undefined : undefined,
-                limit: req.query.limit ? Number(req.query.limit) || undefined : undefined,
-                search: req.query.search as string | undefined,
-                isActive: req.query.isActive ? req.query.isActive === 'true' : undefined,
+                name: name as string | undefined,
+                state: state as string | undefined,
+                city: city as string | undefined,
+                page: page ? pageNumber || undefined : undefined,
+                limit: limit ? limitNumber || undefined : undefined,
+                search: search as string | undefined,
+                isActive: isActive ? req.query.isActive === 'true' : undefined,
             };
 
             const units = await this.unitService.readUnits(queryDTO);
