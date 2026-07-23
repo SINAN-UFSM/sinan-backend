@@ -10,9 +10,10 @@ export class UnitCrudController {
 
     async createUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            if (!req.body.name) {
+            const { name, state, city } = req.body;
+            if (!name || !state || !city) {
                 res.status(400).json({
-                    error: `Missing required field: name`
+                    error: 'Missing required fields: name, state, and city are mandatory.'
                 });
                 return;
             }
@@ -32,16 +33,17 @@ export class UnitCrudController {
 
     async updateUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const rawId = req.params.id;
-            const idString = Array.isArray(rawId) ? rawId[0] : rawId;
-            const unitId = parseInt(idString, 10);
+            const idParam = req.params.id;
+            const id = Number(idParam);
 
-            if (isNaN(unitId)) {
-                res.status(400).json({ error: 'Invalid unit ID' });
+            if (!Number.isSafeInteger(id) || id <= 0) {
+                res.status(400).json({
+                    error: 'Invalid ID: must be a positive integer.'
+                });
                 return;
             }
             const unitDTO: UpdateUnitDTO = {
-                id: unitId,
+                id: id,
                 name: req.body.name,
                 state: req.body.state,
                 city: req.body.city,
@@ -57,16 +59,17 @@ export class UnitCrudController {
 
     async deleteUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const rawId = req.params.id;
-            const idString = Array.isArray(rawId) ? rawId[0] : rawId;
-            const unitId = parseInt(idString, 10);
+            const idParam = req.params.id;
+            const id = Number(idParam);
 
-            if (isNaN(unitId)) {
-                res.status(400).json({ error: 'Invalid unit ID' });
+            if (!Number.isSafeInteger(id) || id <= 0) {
+                res.status(400).json({
+                    error: 'Invalid ID: must be a positive integer.'
+                });
                 return;
             }
 
-            await this.unitService.deleteUnit(unitId);
+            await this.unitService.deleteUnit(id);
             res.status(204).send();
             return;
         } catch (error: unknown) {
@@ -76,16 +79,17 @@ export class UnitCrudController {
 
     async getUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const rawId = req.params.id;
-            const idString = Array.isArray(rawId) ? rawId[0] : rawId;
-            const unitId = parseInt(idString, 10);
+            const idParam = req.params.id;
+            const id = Number(idParam);
 
-            if (isNaN(unitId)) {
-                res.status(400).json({ error: 'Invalid unit ID' });
+            if (!Number.isSafeInteger(id) || id <= 0) {
+                res.status(400).json({
+                    error: 'Invalid ID: must be a positive integer.'
+                });
                 return;
             }
 
-            const unit = await this.unitService.readUnit(unitId);
+            const unit = await this.unitService.readUnit(id);
             if (!unit) {
                 res.status(404).json({ error: 'Unit not found' });
                 return;
