@@ -4,6 +4,8 @@ import { State } from '#modules/units/value-objects/State';
 import { db } from '#infra/database/drizzle/connection';
 import { Unit } from '#modules/units/entities/Unit';
 import { unitsTable } from '#infra/database/drizzle/schema';
+import type { DbUnit } from '#infra/database/drizzle/schema';
+
 import type { ReadUnitsQueryDTO } from '../ports/UnitCrudServicePort.js';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
@@ -52,7 +54,7 @@ class DrizzleUnitRepository {
             return null;
         }
 
-        return this.mapToDomain(dbUnit[0]);
+        return this.mapToDomain(dbUnit[0] as DbUnit);
     }
 
     public async findPaginated(query: ReadUnitsQueryDTO): Promise<PaginatedResponseDTO<Unit>> {
@@ -104,13 +106,9 @@ class DrizzleUnitRepository {
             .offset(offset);
 
         const units: Unit[] = dbUnits.map(row => {
-            return this.mapToDomain({
-                id: row.id,
-                name: row.name,
-                city: row.city,
-                state: row.state,
-                isActive: row.isActive,
-            });
+            return this.mapToDomain(
+                row as DbUnit
+            );
         });
 
         const totalPages = Math.ceil(totalItems / limit);
@@ -123,7 +121,7 @@ class DrizzleUnitRepository {
             totalPages,
         };
     }
-    private mapToDomain(dbUnit: any): Unit {
+    private mapToDomain(dbUnit: DbUnit): Unit {
         return Unit.create({
             id: dbUnit.id,
             name: dbUnit.name,
