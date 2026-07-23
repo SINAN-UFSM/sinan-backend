@@ -13,7 +13,9 @@ const usersTable = pgTable('users', {
     unitId: integer('unit_id').notNull().references(() => unitsTable.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
-});
+}, (table) => [
+    index('user_unit_id_index').on(table.unitId)
+]);
 
 const refreshTokensTable = pgTable('refresh_tokens', {
     id: uuid('id').primaryKey().defaultRandom(),
