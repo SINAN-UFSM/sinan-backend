@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
-import { InternalServerError, UnauthorizedError } from '#errors/HttpErrors';
+import { InternalServerError, UnauthorizedError } from '#shared/errors/HttpErrors';
 
 const verifyBearerToken = (req: Request, _: Response, next: NextFunction): void => {
     try {

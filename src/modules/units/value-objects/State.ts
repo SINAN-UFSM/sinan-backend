@@ -1,4 +1,4 @@
-import { BadRequestError } from '#errors/HttpErrors';
+import { BadRequestError } from '#shared/errors/HttpErrors';
 
 class State {
     private readonly _value: string;

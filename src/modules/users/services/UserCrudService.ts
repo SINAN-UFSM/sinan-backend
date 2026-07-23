@@ -5,7 +5,7 @@ import { User, type UserProps } from "#modules/users/entities/User";
 
 import { HashedPassword } from '../value-objects/HashedPassword.js';
 import { Email } from '../value-objects/Email.js';
-import { BadRequestError, NotFoundError } from '#errors/HttpErrors';
+import { BadRequestError, NotFoundError } from '#shared/errors/HttpErrors';
 
 class UserCrudService implements UserCrudServicePort {
     private userRepository: UserRepositoryPort;

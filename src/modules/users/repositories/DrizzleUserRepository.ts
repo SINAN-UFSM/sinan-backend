@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
-import { db } from '#infra/database/drizzle/connection';
-import { usersTable, type DbUser, type DbUserInsert } from '#infra/database/drizzle/schema';
+import { db } from '#shared/infra/database/drizzle/connection';
+import { usersTable, type DbUser, type DbUserInsert } from '#shared/infra/database/drizzle/schema';
 
 import type { UserRepositoryPort } from '#modules/users/ports/UserRepositoryPort';
 import { User, type UserProps } from '#modules/users/entities/User';

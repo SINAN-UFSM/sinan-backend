@@ -4,6 +4,20 @@ import { sql } from 'drizzle-orm';
 
 const roleEnum = pgEnum('role', ['admin', 'user']);
 
+const unitsTable = pgTable('units', {
+    id: serial('id').primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    city: varchar('city', { length: 255 }).notNull(),
+    state: varchar('state', { length: 255 }).notNull(),
+    isActive: boolean('is_active').notNull().default(true),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+}, (table) => [
+    index('unit_name_trgm_index').using('gin', sql`${table.name} gin_trgm_ops`),
+    index('unit_city_trgm_index').using('gin', sql`${table.city} gin_trgm_ops`),
+    index('unit_state_trgm_index').using('gin', sql`${table.state} gin_trgm_ops`),
+]);
+
 const usersTable = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
     name: varchar('name', { length: 255 }).notNull(),
@@ -26,20 +40,6 @@ const refreshTokensTable = pgTable('refresh_tokens', {
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
     index('token_hash_index').on(table.tokenHash),
-]);
-
-const unitsTable = pgTable('units', {
-    id: serial('id').primaryKey(),
-    name: varchar('name', { length: 255 }).notNull(),
-    city: varchar('city', { length: 255 }).notNull(),
-    state: varchar('state', { length: 255 }).notNull(),
-    isActive: boolean('is_active').notNull().default(true),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull()
-}, (table) => [
-    index('unit_name_trgm_index').using('gin', sql`${table.name} gin_trgm_ops`),
-    index('unit_city_trgm_index').using('gin', sql`${table.city} gin_trgm_ops`),
-    index('unit_state_trgm_index').using('gin', sql`${table.state} gin_trgm_ops`),
 ]);
 
 type DbUser = typeof usersTable.$inferSelect;

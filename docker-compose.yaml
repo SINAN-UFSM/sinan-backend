@@ -36,7 +36,7 @@ services:
     build: 
       context: .
       target: runner 
-    command: ["sh", "-c", "node dist/infra/database/drizzle/setup-db.js && node dist/index.js"]
+    command: ["sh", "-c", "node dist/shared/infra/database/drizzle/setup-db.js && node dist/index.js"]
     ports:
       - "8000:8000"
     environment:
