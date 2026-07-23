@@ -9,6 +9,10 @@ export default defineConfig({
     out: './drizzle',
 
     dbCredentials: {
-        url: process.env.DATABASE_URL ?? (() => { throw new Error('DATABASE_URL is not defined'); })(),
+        host: process.env.POSTGRES_HOST as string,
+        port: Number(process.env.POSTGRES_PORT),
+        user: process.env.POSTGRES_USER as string,
+        password: process.env.POSTGRES_PASSWORD as string,
+        database: process.env.POSTGRES_DB as string,
     },
 });

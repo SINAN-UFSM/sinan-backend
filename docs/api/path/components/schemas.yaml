@@ -21,7 +21,7 @@ UserResponse:
         - name
         - email
         - role
-        - unit_id
+        - unitId
       properties:
         id:
           type: string
@@ -35,7 +35,7 @@ UserResponse:
           enum:
             - admin
             - user
-        unit_id:
+        unitId:
           type: integer
           description: ID da unidade de saúde associada ao usuário.
           example: 12
@@ -49,7 +49,7 @@ UserCreateRequest:
         - email
         - password
         - role
-        - unit_id
+        - unitId
       properties:
         password:
           type: string
@@ -65,7 +65,7 @@ UserCreateRequest:
           enum:
             - admin
             - user
-        unit_id:
+        unitId:
           type: integer
           description: ID da unidade de saúde associada ao usuário.
           example: 12
@@ -96,7 +96,7 @@ UserUpdateRequest:
       enum:
         - admin
         - user
-    unit_id:
+    unitId:
       type: integer
       description: ID da unidade (requer privilégios de admin).
       example: 12
@@ -170,7 +170,7 @@ PatientResponse:
           type: integer
           description: ID único do paciente.
           example: 105
-        is_active:
+        isActive:
           type: boolean
           description: Indica se o paciente está ativo no cadastro lógico.
           example: true
@@ -188,8 +188,6 @@ UnitBase:
   type: object
   required:
     - name
-    - city
-    - state
   properties:
     name:
       type: string
@@ -213,7 +211,7 @@ UnitResponse:
           type: integer
           description: ID único da unidade (gerado pelo banco).
           example: 12
-        is_active:
+        isActive:
           type: boolean
           description: Indica se a unidade está ativa no cadastro lógico.
           example: true
@@ -224,20 +222,34 @@ UnitCreateRequest:
 
 PaginatedUnitList:
   type: object
+  required:
+    - data
+    - page
+    - limit
+    - total
+    - totalPages
   properties:
     count:
       type: integer
       description: Total de unidades cadastradas.
       example: 45230
-    next:
-      type: string
-      nullable: true
-      example: "http://localhost:8000/api/v1/units/?page=2"
-    previous:
-      type: string
-      nullable: true
-      example: null
-    results:
+    page:
+      type: integer
+      description: Número da página atual.
+      example: 1
+    limit:
+      type: integer
+      description: Quantidade de itens por página.
+      example: 10
+    total:
+      type: integer
+      description: Total geral de registros encontrados.
+      example: 45230
+    totalPages:
+      type: integer
+      description: Total de páginas disponíveis.
+      example: 4523
+    data:
       type: array
       items:
         $ref: "#/UnitResponse"
@@ -247,7 +259,7 @@ NotificationBase:
   type: object
   required:
     - patient_id
-    - unit_id
+    - unitId
     - status
     - notification_date
     - occurrence_date
@@ -257,7 +269,7 @@ NotificationBase:
       type: integer
       description: ID do paciente.
       example: 55
-    unit_id:
+    unitId:
       type: integer
       description: ID da unidade de saúde.
       example: 12
@@ -467,7 +479,7 @@ DengueCreateRequest:
           $ref: "#/DengueSpecificFields"
   example:
     patient_id: 55
-    unit_id: 12
+    unitId: 12
     status: "draft"
     notification_type_slug: "dengue"
     notification_date: "2026-06-25"
@@ -497,7 +509,7 @@ DengueNotificationResponse:
   example:
     id: 1042
     patient_id: 55
-    unit_id: 12
+    unitId: 12
     user_id: 7
     status: "published"
     notification_type_slug: "dengue"
