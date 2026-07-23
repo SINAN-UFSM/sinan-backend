@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { BadRequestError } from '#errors/HttpErrors';
+import { BadRequestError } from '#shared/errors/HttpErrors';
 
 class HashedPassword {
     private readonly hashedPassword: string;

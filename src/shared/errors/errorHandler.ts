@@ -4,7 +4,7 @@ import {
     UnauthorizedError,
     NotFoundError,
     ForbiddenError,
-} from '#errors/HttpErrors';
+} from '#shared/errors/HttpErrors';
 
 const errorHandler = (
     err: Error,

@@ -1,10 +1,10 @@
 import { eq, ilike, or, and, count, asc } from 'drizzle-orm';
 import { State } from '#modules/units/value-objects/State';
 
-import { db } from '#infra/database/drizzle/connection';
+import { db } from '#shared/infra/database/drizzle/connection';
 import { Unit } from '#modules/units/entities/Unit';
-import { unitsTable } from '#infra/database/drizzle/schema';
-import type { DbUnit } from '#infra/database/drizzle/schema';
+import { unitsTable } from '#shared/infra/database/drizzle/schema';
+import type { DbUnit } from '#shared/infra/database/drizzle/schema';
 
 import type { ReadUnitsQueryDTO } from '../ports/UnitCrudServicePort.js';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';

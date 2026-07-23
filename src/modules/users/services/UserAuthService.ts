@@ -8,7 +8,7 @@ import type { RefreshTokenRepositoryPort } from '#modules/users/ports/RefreshTok
 import { RefreshToken } from '../entities/RefreshToken.js';
 
 import { Email } from '#modules/users/value-objects/Email';
-import { UnauthorizedError } from '#errors/HttpErrors';
+import { UnauthorizedError } from '#shared/errors/HttpErrors';
 
 class UserAuthService implements UserAuthServicePort {
     private userRepository: UserRepositoryPort;

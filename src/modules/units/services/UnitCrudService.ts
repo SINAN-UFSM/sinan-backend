@@ -2,7 +2,7 @@ import type { UnitCrudServicePort, UnitResponseDTO, UpdateUnitDTO, CreateUnitDTO
 import { Unit } from "#modules/units/entities/Unit";
 
 import type { UnitRepositoryPort } from "#modules/units/ports/UnitRepositoryPort";
-import { NotFoundError } from "#errors/HttpErrors";
+import { NotFoundError } from "#shared/errors/HttpErrors";
 import { State } from "#modules/units/value-objects/State";
 import type { PaginatedResponseDTO } from "#shared/dtos/paginated-query.dto";
 

@@ -1,4 +1,4 @@
-import { app } from '#infra/http/server';
+import { app } from '#shared/infra/http/server';
 
 const PORT = Number(process.env.PORT) || 3000;
 

@@ -1,4 +1,4 @@
-import { BadRequestError } from '#errors/HttpErrors';
+import { BadRequestError } from '#shared/errors/HttpErrors';
 
 class Email {
     private readonly email: string;

@@ -1,3 +1,4 @@
+import { BadRequestError } from '#shared/errors/HttpErrors';
 
 class RefreshToken {
     private readonly userId: string;
@@ -12,11 +13,11 @@ class RefreshToken {
 
     public static create(userId: string, hash: string, expiresAt: Date): RefreshToken {
         if (!userId || !hash || !expiresAt) {
-            throw new Error('Missing required fields for RefreshToken');
+            throw new BadRequestError('Missing required fields for RefreshToken');
         }
 
         if (Number.isNaN(expiresAt.getTime())) {
-            throw new Error('Invalid expiration date');
+            throw new BadRequestError('Invalid expiration date');
         }
 
         return new RefreshToken(userId, hash, expiresAt);

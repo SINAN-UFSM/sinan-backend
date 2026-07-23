@@ -1,7 +1,7 @@
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import bcrypt from 'bcrypt';
-import { db, pool } from '#infra/database/drizzle/connection';
-import { usersTable } from '#infra/database/drizzle/schema';
+import { db, pool } from '#shared/infra/database/drizzle/connection';
+import { unitsTable, usersTable } from '#shared/infra/database/drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 async function setupDatabase() {
@@ -22,6 +22,14 @@ async function setupDatabase() {
             console.log('[Setup] Administrator already exists. Seed skipped.');
             return;
         }
+
+        await tx.insert(unitsTable).values({
+            id: 1,
+            name: 'Default Unit',
+            city: 'Default City',
+            state: 'ST',
+            isActive: true,
+        }).onConflictDoNothing({ target: unitsTable.id });
 
         console.log('[Setup] Database is empty. Creating the first administrator...');
         const adminPassword = process.env.ADMIN_PASSWORD;

@@ -1,8 +1,8 @@
 import express from 'express';
 import helmet from 'helmet';
 
-import { router } from '#infra/http/routes';
-import { errorHandler } from '#errors/errorHandler';
+import { router } from '#shared/infra/http/routes';
+import { errorHandler } from '#shared/errors/errorHandler';
 
 const app = express();
 

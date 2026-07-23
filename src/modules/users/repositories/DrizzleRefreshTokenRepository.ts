@@ -1,7 +1,7 @@
 import type { RefreshTokenRepositoryPort } from '#modules/users/ports/RefreshTokenRepositoryPort';
 
-import { db } from '#infra/database/drizzle/connection';
-import { refreshTokensTable } from '#infra/database/drizzle/schema';
+import { db } from '#shared/infra/database/drizzle/connection';
+import { refreshTokensTable } from '#shared/infra/database/drizzle/schema';
 import { RefreshToken } from '../entities/RefreshToken.js';
 import { eq } from 'drizzle-orm';
 

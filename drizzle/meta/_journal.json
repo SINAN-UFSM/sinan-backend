@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1784663423085,
-      "tag": "0000_right_arclight",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1784675732826,
-      "tag": "0001_heavy_adam_destine",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1784755746476,
-      "tag": "0002_abnormal_cannonball",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1784762744215,
-      "tag": "0003_light_stryfe",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1784771860248,
-      "tag": "0004_futuristic_kat_farrell",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1784784278135,
-      "tag": "0005_optimal_timeslip",
+      "when": 1784787236898,
+      "tag": "0000_foamy_mandroid",
       "breakpoints": true
     }
   ]
