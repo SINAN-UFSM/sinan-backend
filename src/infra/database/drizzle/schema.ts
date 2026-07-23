@@ -10,7 +10,7 @@ const usersTable = pgTable('users', {
     email: varchar('email', { length: 255 }).notNull().unique(),
     hashedPassword: varchar('hashed_password', { length: 255 }).notNull(),
     role: roleEnum('role').notNull(),
-    unitId: integer('unit_id').notNull().references(() => unitsTable.id, { onDelete: 'cascade' }),
+    unitId: integer('unit_id').notNull().references(() => unitsTable.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
