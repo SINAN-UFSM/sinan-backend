@@ -1,5 +1,15 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { CreateUnitDTO, UpdateUnitDTO, UnitCrudServicePort, ReadUnitsQueryDTO } from '#modules/units/ports/UnitCrudServicePort';
+import type {
+    UnitCrudServicePort,
+    CreateUnitDTO,
+    UpdateUnitDTO,
+    ReadUnitsQueryDTO
+} from '#modules/units/ports/UnitCrudServicePort';
+import {
+    createUnitSchema,
+    updateUnitSchema,
+    readUnitsQuerySchema
+} from '#modules/units/ports/UnitCrudServicePort';
 
 export class UnitCrudController {
     private readonly unitService: UnitCrudServicePort;
@@ -10,7 +20,7 @@ export class UnitCrudController {
 
     async createUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const unitDTO: CreateUnitDTO = req.body;
+            const unitDTO: CreateUnitDTO = createUnitSchema.parse(req.body);
             const unit = await this.unitService.createUnit(unitDTO);
 
             res.status(201).json(unit);
@@ -21,10 +31,11 @@ export class UnitCrudController {
 
     async updateUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params as unknown as { id: number };
+            const id = Number(req.params.id);
+            const bodyData = updateUnitSchema.parse(req.body);
             const unitDTO: UpdateUnitDTO = {
                 id,
-                ...req.body,
+                ...bodyData,
             };
 
             await this.unitService.updateUnit(unitDTO);
@@ -36,7 +47,7 @@ export class UnitCrudController {
 
     async deleteUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params as unknown as { id: number };
+            const id = Number(req.params.id);
             await this.unitService.deleteUnit(id);
 
             res.status(204).send();
@@ -47,7 +58,7 @@ export class UnitCrudController {
 
     async getUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params as unknown as { id: number };
+            const id = Number(req.params.id);
             const unit = await this.unitService.readUnit(id);
 
             if (!unit) {
@@ -63,7 +74,8 @@ export class UnitCrudController {
 
     async getUnits(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const queryDTO: ReadUnitsQueryDTO = req.query as unknown as ReadUnitsQueryDTO;
+            const queryDTO: ReadUnitsQueryDTO = readUnitsQuerySchema.parse(req.query);
+
             const units = await this.unitService.readUnits(queryDTO);
 
             res.status(200).json(units);
