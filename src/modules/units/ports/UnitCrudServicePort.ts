@@ -1,17 +1,41 @@
-import type { PaginatedQueryDTO, PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
+import { z } from 'zod';
+import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
-type CreateUnitDTO = {
-    name: string;
-    state: string;
-    city: string;
-}
+export { idParamSchema } from '#shared/validators/common.validator';
+
+const validStates = [
+    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+    'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+    'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+] as const;
+
+export const createUnitSchema = z.object({
+    name: z.string().min(1, 'Name cannot be empty'),
+    state: z.enum(validStates, { message: 'Invalid state' }),
+    city: z.string().min(1, 'City cannot be empty'),
+});
+
+export const updateUnitSchema = z.object({
+    name: z.string().min(1, 'Name cannot be empty').optional(),
+    state: z.enum(validStates, { message: 'Invalid state' }).optional(),
+    city: z.string().min(1, 'City cannot be empty').optional(),
+});
+
+export const readUnitsQuerySchema = z.object({
+    name: z.string().optional(),
+    state: z.string().optional(),
+    city: z.string().optional(),
+    page: z.coerce.number().min(1).default(1),
+    limit: z.coerce.number().min(1).default(10),
+    search: z.string().optional(),
+    isActive: z.coerce.boolean().optional(),
+});
+
+type CreateUnitDTO = z.infer<typeof createUnitSchema>;
 
 type UpdateUnitDTO = {
     id: number;
-    name?: string;
-    state?: string;
-    city?: string;
-}
+} & z.infer<typeof updateUnitSchema>;
 
 type UnitResponseDTO = {
     id: number;
@@ -21,14 +45,7 @@ type UnitResponseDTO = {
     isActive: boolean;
 };
 
-type UnitFiltersDTO = {
-    name?: string;
-    state?: string;
-    city?: string;
-    isActive?: boolean;
-};
-
-type ReadUnitsQueryDTO = PaginatedQueryDTO<UnitFiltersDTO>;
+type ReadUnitsQueryDTO = z.infer<typeof readUnitsQuerySchema>;
 
 interface UnitCrudServicePort {
     createUnit(unitDTO: CreateUnitDTO): Promise<UnitResponseDTO>;
@@ -38,4 +55,10 @@ interface UnitCrudServicePort {
     readUnits(queryDTO: ReadUnitsQueryDTO): Promise<PaginatedResponseDTO<UnitResponseDTO>>;
 }
 
-export type { CreateUnitDTO, UpdateUnitDTO, UnitResponseDTO, ReadUnitsQueryDTO, UnitFiltersDTO, UnitCrudServicePort };
+export type {
+    CreateUnitDTO,
+    UpdateUnitDTO,
+    UnitResponseDTO,
+    ReadUnitsQueryDTO,
+    UnitCrudServicePort
+};

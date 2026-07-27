@@ -6,7 +6,7 @@ import { Unit } from '#modules/units/entities/Unit';
 import { unitsTable } from '#shared/infra/database/drizzle/schema';
 import type { DbUnit } from '#shared/infra/database/drizzle/schema';
 
-import type { ReadUnitsQueryDTO } from '../ports/UnitCrudServicePort.js';
+import type { ReadUnitsQueryDTO } from '#modules/units/ports/UnitCrudServicePort';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
 class DrizzleUnitRepository {
