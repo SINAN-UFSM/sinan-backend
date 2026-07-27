@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import {
     BadRequestError,
     UnauthorizedError,
@@ -7,12 +8,22 @@ import {
 } from '#shared/errors/HttpErrors';
 
 const errorHandler = (
-    err: Error,
+    err: unknown,
     _req: Request,
     res: Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _next: NextFunction
 ) => {
+    if (err instanceof z.ZodError) {
+        return res.status(400).json({
+            error: 'Validation error',
+            details: err.issues.map((issue) => ({
+                field: issue.path.join('.'),
+                message: issue.message
+            }))
+        });
+    }
+
     if (err instanceof BadRequestError) {
         return res.status(400).json({ error: err.message });
     }
@@ -25,6 +36,7 @@ const errorHandler = (
     if (err instanceof NotFoundError) {
         return res.status(404).json({ error: err.message });
     }
+
     console.error('[Unhandled Error]:', err);
     return res.status(500).json({ error: 'Internal server error' });
 };

@@ -31,7 +31,6 @@ class UserAuthController {
 
     async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // Usando o schema importado!
             const { refresh } = refreshTokenSchema.parse(req.body);
 
             await this.userAuthService.logout(refresh);
