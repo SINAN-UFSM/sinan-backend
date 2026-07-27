@@ -4,8 +4,8 @@ import crypto from 'crypto';
 import type { UserRepositoryPort } from '#modules/users/ports/UserRepositoryPort';
 import type { UserAuthServicePort, LoginRequestDTO, LoginResponseDTO } from '#modules/users/ports/UserAuthServicePort';
 import type { RefreshTokenRepositoryPort } from '#modules/users/ports/RefreshTokenRepositoryPort';
-
-import { RefreshToken } from '../entities/RefreshToken.js';
+import type { PasswordHasherPort } from '#modules/users/ports/PasswordHasherPort';
+import { RefreshToken } from '#modules/users/entities/RefreshToken';
 
 import { Email } from '#modules/users/value-objects/Email';
 import { UnauthorizedError } from '#shared/errors/HttpErrors';
@@ -13,11 +13,13 @@ import { UnauthorizedError } from '#shared/errors/HttpErrors';
 class UserAuthService implements UserAuthServicePort {
     private userRepository: UserRepositoryPort;
     private refreshTokenRepository: RefreshTokenRepositoryPort;
+    private passwordHasher: PasswordHasherPort;
     private readonly JWT_SECRET = process.env.JWT_SECRET ?? (() => { throw new Error('JWT_SECRET is not defined'); })();
 
-    constructor(userRepository: UserRepositoryPort, refreshTokenRepository: RefreshTokenRepositoryPort) {
+    constructor(userRepository: UserRepositoryPort, refreshTokenRepository: RefreshTokenRepositoryPort, passwordHasher: PasswordHasherPort) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.passwordHasher = passwordHasher;
     }
 
     public async login(request: LoginRequestDTO): Promise<LoginResponseDTO> {
@@ -29,7 +31,7 @@ class UserAuthService implements UserAuthServicePort {
             throw new UnauthorizedError('Invalid email or password');
         }
 
-        const isPasswordValid = await user.hashedPassword.compare(password);
+        const isPasswordValid = await this.passwordHasher.compare(password, user.hashedPassword.value);
         if (!isPasswordValid) {
             throw new UnauthorizedError('Invalid email or password');
         }

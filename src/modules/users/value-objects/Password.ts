@@ -1,21 +1,21 @@
-import bcrypt from 'bcrypt';
 import { BadRequestError } from '#shared/errors/HttpErrors';
 
-class HashedPassword {
-    private readonly hashedPassword: string;
+class Password {
+    private readonly passwordValue: string;
+    private readonly isHashed: boolean;
 
-    private constructor(hashedPassword: string) {
-        this.hashedPassword = hashedPassword;
+    private constructor(passwordValue: string, isHashed: boolean) {
+        this.passwordValue = passwordValue;
+        this.isHashed = isHashed;
     }
 
-    public static async create(plainPassword: string): Promise<HashedPassword> {
+    public static create(plainPassword: string): Password {
         this.validatePassword(plainPassword);
-        const hashedPassword = await bcrypt.hash(plainPassword, 10);
-        return new HashedPassword(hashedPassword);
+        return new Password(plainPassword, false);
     }
 
-    public static fromPersisted(existingHash: string): HashedPassword {
-        return new HashedPassword(existingHash);
+    public static fromPersisted(existingHash: string): Password {
+        return new Password(existingHash, true);
     }
 
     private static validatePassword(plainPassword: string): void {
@@ -41,12 +41,12 @@ class HashedPassword {
     }
 
     public get value(): string {
-        return this.hashedPassword;
+        return this.passwordValue;
     }
 
-    public async compare(plainPassword: string): Promise<boolean> {
-        return await bcrypt.compare(plainPassword, this.hashedPassword);
+    public get hashed(): boolean {
+        return this.isHashed;
     }
 }
 
-export { HashedPassword };
+export { Password };

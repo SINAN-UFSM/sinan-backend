@@ -5,8 +5,8 @@ import { usersTable, type DbUser, type DbUserInsert } from '#shared/infra/databa
 
 import type { UserRepositoryPort } from '#modules/users/ports/UserRepositoryPort';
 import { User, type UserProps } from '#modules/users/entities/User';
-import { HashedPassword } from '#modules/users/value-objects/HashedPassword';
-import { Email } from '../value-objects/Email.js';
+import { Password } from '#modules/users/value-objects/Password';
+import { Email } from '#modules/users/value-objects/Email';
 
 class DrizzleUserRepository implements UserRepositoryPort {
 
@@ -66,7 +66,7 @@ class DrizzleUserRepository implements UserRepositoryPort {
 
     }
     private mapToDomain(dbUser: DbUser): User {
-        const hashedPassword = HashedPassword.fromPersisted(dbUser.hashedPassword);
+        const hashedPassword = Password.fromPersisted(dbUser.hashedPassword);
         const email = Email.fromPersisted(dbUser.email);
         return User.reconstitute({
             id: dbUser.id,

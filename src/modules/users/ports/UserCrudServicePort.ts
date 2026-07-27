@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 import { uuidParamSchema } from '#shared/validators/common.validator';
 
 export { uuidParamSchema };
@@ -53,8 +52,6 @@ interface UserCrudServicePort {
     createUser(userDTO: CreateUserDTO): Promise<UserResponseDTO>;
     updateUser(userDTO: UpdateUserDTO): Promise<UserResponseDTO>;
     deleteUser(id: string): Promise<void>;
-    readUser(id: string): Promise<UserResponseDTO | null>;
-    readUsers(queryDTO: ReadUsersQueryDTO): Promise<PaginatedResponseDTO<UserResponseDTO>>;
 }
 
 export type {

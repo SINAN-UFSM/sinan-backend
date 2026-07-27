@@ -2,7 +2,7 @@ import type { RefreshTokenRepositoryPort } from '#modules/users/ports/RefreshTok
 
 import { db } from '#shared/infra/database/drizzle/connection';
 import { refreshTokensTable } from '#shared/infra/database/drizzle/schema';
-import { RefreshToken } from '../entities/RefreshToken.js';
+import { RefreshToken } from '#modules/users/entities/RefreshToken';
 import { eq } from 'drizzle-orm';
 
 class DrizzleRefreshTokenRepository implements RefreshTokenRepositoryPort {

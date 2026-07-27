@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-    email: z.string().email({ error: 'Invalid email format' }),
+    email: z.email({ error: 'Invalid email format' }),
     password: z.string().min(1, 'Password is required')
 });
 
