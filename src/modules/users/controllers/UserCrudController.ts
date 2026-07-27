@@ -1,6 +1,10 @@
-import type { UserCrudServicePort, CreateUserDTO } from '#modules/users/ports/UserCrudServicePort';
-
 import type { Request, Response, NextFunction } from 'express';
+import type { UserCrudServicePort, CreateUserDTO, UpdateUserDTO } from '#modules/users/ports/UserCrudServicePort';
+import {
+    createUserSchema,
+    updateUserSchema,
+    uuidParamSchema
+} from '#modules/users/ports/UserCrudServicePort';
 
 class UserCrudController {
     private readonly service: UserCrudServicePort;
@@ -11,30 +15,9 @@ class UserCrudController {
 
     public async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const missingFields: string[] = [];
-            if (!req.body.name) missingFields.push('name');
-            if (!req.body.email) missingFields.push('email');
-            if (!req.body.password) missingFields.push('password');
-            if (!req.body.role) missingFields.push('role');
-            if (!req.body.unitId) missingFields.push('unitId');
+            const userDTO: CreateUserDTO = createUserSchema.parse(req.body);
 
-            if (missingFields.length > 0) {
-                res.status(400).json({
-                    error: `Missing required fields: ${missingFields.join(', ')}`
-                });
-                return;
-            }
-
-            const userDTO: CreateUserDTO = {
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password,
-                role: req.body.role,
-                unitId: req.body.unitId
-            };
-            const user = await this.service.createUser(
-                userDTO
-            );
+            const user = await this.service.createUser(userDTO);
 
             res.status(201).json(user);
             return;
@@ -43,21 +26,23 @@ class UserCrudController {
         }
     }
 
-
     public async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = req.params.id as string;
+            const { id } = uuidParamSchema.parse(req.params);
+
+            const parsedBody = updateUserSchema.parse(req.body);
 
             const isAdmin = req.user?.role === 'admin';
-            const userDTO = {
-                email: req.body.email,
-                password: req.body.password,
-                // Only allow role, name and unitId updates if the requester is an admin
-                name: isAdmin ? req.body.name : undefined,
-                role: isAdmin ? req.body.role : undefined,
-                unitId: isAdmin ? req.body.unitId : undefined
+            const userDTO: UpdateUserDTO = {
+                id,
+                email: parsedBody.email,
+                password: parsedBody.password,
+                name: isAdmin ? parsedBody.name : undefined,
+                role: isAdmin ? parsedBody.role : undefined,
+                unitId: isAdmin ? parsedBody.unitId : undefined
             };
-            const updatedUser = await this.service.updateUser(userId, userDTO);
+
+            const updatedUser = await this.service.updateUser(userDTO);
 
             res.status(200).json(updatedUser);
             return;
@@ -68,8 +53,9 @@ class UserCrudController {
 
     public async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = req.params.id as string;
-            await this.service.deleteUser(userId);
+            const { id } = uuidParamSchema.parse(req.params);
+
+            await this.service.deleteUser(id);
 
             res.status(204).send();
             return;

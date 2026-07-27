@@ -1,5 +1,13 @@
-import type { UserAuthServicePort, LoginRequestDTO, LoginResponseDTO } from '#modules/users/ports/UserAuthServicePort';
 import type { Request, Response, NextFunction } from 'express';
+import type {
+    UserAuthServicePort,
+    LoginResponseDTO,
+} from '#modules/users/ports/UserAuthServicePort';
+
+import {
+    loginSchema,
+    refreshTokenSchema
+} from '#modules/users/ports/UserAuthServicePort';
 
 class UserAuthController {
     private userAuthService: UserAuthServicePort;
@@ -10,17 +18,10 @@ class UserAuthController {
 
     async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const request: LoginRequestDTO = {
-                email: req.body.email,
-                password: req.body.password
-            };
+            const requestData = loginSchema.parse(req.body);
 
-            if (!request.email || !request.password) {
-                res.status(400).json({ error: 'Email and password are required' });
-                return;
-            }
+            const response: LoginResponseDTO = await this.userAuthService.login(requestData);
 
-            const response: LoginResponseDTO = await this.userAuthService.login(request);
             res.status(200).json(response);
             return;
         } catch (error: unknown) {
@@ -30,14 +31,11 @@ class UserAuthController {
 
     async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const refreshToken = req.body.refresh;
+            // Usando o schema importado!
+            const { refresh } = refreshTokenSchema.parse(req.body);
 
-            if (!refreshToken) {
-                res.status(400).json({ error: 'Refresh token is required' });
-                return;
-            }
+            await this.userAuthService.logout(refresh);
 
-            await this.userAuthService.logout(refreshToken);
             res.status(200).json({ message: 'Logged out successfully' });
             return;
         } catch (error: unknown) {
@@ -47,14 +45,10 @@ class UserAuthController {
 
     async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const oldRefreshToken = req.body.refresh;
+            const { refresh } = refreshTokenSchema.parse(req.body);
 
-            if (!oldRefreshToken) {
-                res.status(400).json({ error: 'Refresh token is required' });
-                return;
-            }
+            const response: LoginResponseDTO = await this.userAuthService.refresh(refresh);
 
-            const response: LoginResponseDTO = await this.userAuthService.refresh(oldRefreshToken);
             res.status(200).json(response);
             return;
         } catch (error: unknown) {
@@ -63,4 +57,4 @@ class UserAuthController {
     }
 }
 
-export { UserAuthController }; 
+export { UserAuthController };
