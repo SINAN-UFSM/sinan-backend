@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, integer, pgEnum, timestamp, boolean, index, serial } from 'drizzle-orm/pg-core';
-import { text } from 'drizzle-orm/pg-core';
+import { text, date } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 const roleEnum = pgEnum('role', ['admin', 'user']);
@@ -47,7 +47,7 @@ const patientsTable = pgTable('patients', {
     name: varchar('name', { length: 255 }).notNull(),
     cpf: varchar('cpf', { length: 11 }).notNull().unique(),
     susCard: varchar('sus_card', { length: 15 }).notNull().unique(),
-    birthDate: timestamp('birth_date', { withTimezone: true }).notNull(),
+    birthDate: date('birth_date').notNull(),
     birthCity: varchar('birth_city', { length: 255 }).notNull(),
     phone: varchar('phone', { length: 15 }).notNull(),
     gender: varchar('gender', { length: 50 }).notNull(),

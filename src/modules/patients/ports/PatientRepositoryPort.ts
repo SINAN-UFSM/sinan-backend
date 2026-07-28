@@ -4,7 +4,7 @@ import type { ReadPatientsQueryDTO } from "#modules/patients/ports/PatientCrudSe
 
 interface PatientRepositoryPort {
     create(patient: Patient): Promise<Patient>;
-    update(patientId: string, patient: Partial<Patient>): Promise<Patient>;
+    update(patientId: string, patient: Patient): Promise<Patient>;
     delete(patientId: string): Promise<void>;
     findById(patientId: string): Promise<Patient | null>;
     findPaginated(query: ReadPatientsQueryDTO): Promise<PaginatedResponseDTO<Patient>>;

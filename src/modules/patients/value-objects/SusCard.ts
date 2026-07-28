@@ -11,7 +11,7 @@ class SusCard {
         if (!SusCard.isValid(value)) {
             throw new BadRequestError('Invalid SUS Card');
         }
-        return new SusCard(value);
+        return new SusCard(value.replace(/\D/g, ''));
     }
 
     private static isValid(value: string): boolean {

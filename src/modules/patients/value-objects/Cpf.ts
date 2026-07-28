@@ -11,7 +11,7 @@ class Cpf {
         if (!Cpf.isValid(_value)) {
             throw new BadRequestError('Invalid CPF');
         }
-        return new Cpf(_value);
+        return new Cpf(_value.replace(/\D/g, ''));
     }
 
     private static isValid(_value: string): boolean {

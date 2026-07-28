@@ -15,19 +15,7 @@ import type { ReadPatientsQueryDTO } from "#modules/patients/ports/PatientCrudSe
 
 class DrizzlePatientRepository implements PatientRepositoryPort {
     async create(patient: Patient): Promise<Patient> {
-        const patientData = {
-            name: patient.name,
-            cpf: patient.cpf.value,
-            susCard: patient.susCard.value,
-            birthDate: patient.birthDate.value,
-            birthCity: patient.birthCity,
-            phone: patient.phone.value,
-            gender: patient.gender,
-            educationLevel: patient.educationLevel,
-            raceColor: patient.raceColor,
-            currentAddress: patient.currentAddress,
-            isActive: patient.isActive,
-        }
+        const patientData = this.toPersistence(patient);
 
         const [dbPatient] = await db.insert(patientsTable)
             .values(patientData)
@@ -37,19 +25,8 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
     }
 
     async update(patientId: string, patient: Patient): Promise<Patient> {
-        const patientData = {
-            name: patient.name,
-            cpf: patient.cpf.value,
-            susCard: patient.susCard.value,
-            birthDate: patient.birthDate.value,
-            birthCity: patient.birthCity,
-            phone: patient.phone.value,
-            gender: patient.gender,
-            educationLevel: patient.educationLevel,
-            raceColor: patient.raceColor,
-            currentAddress: patient.currentAddress,
-            isActive: patient.isActive,
-        }
+        const patientData = this.toPersistence(patient);
+
         const [dbPatient] = await db.update(patientsTable)
             .set(patientData)
             .where(eq(patientsTable.id, patientId))
@@ -103,6 +80,30 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
             conditions.push(ilike(patientsTable.susCard, `%${query.susCard}%`));
         }
 
+        if (query.birthCity) {
+            conditions.push(ilike(patientsTable.birthCity, `%${query.birthCity}%`));
+        }
+
+        if (query.phone) {
+            conditions.push(ilike(patientsTable.phone, `%${query.phone}%`));
+        }
+
+        if (query.gender) {
+            conditions.push(eq(patientsTable.gender, query.gender));
+        }
+
+        if (query.educationLevel) {
+            conditions.push(eq(patientsTable.educationLevel, query.educationLevel));
+        }
+
+        if (query.raceColor) {
+            conditions.push(eq(patientsTable.raceColor, query.raceColor));
+        }
+
+        if (query.currentAddress) {
+            conditions.push(ilike(patientsTable.currentAddress, `%${query.currentAddress}%`));
+        }
+
         if (search) {
             conditions.push(
                 or(
@@ -140,6 +141,22 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
             page,
             limit,
             totalPages,
+        };
+    }
+
+    private toPersistence(patient: Patient) {
+        return {
+            name: patient.name,
+            cpf: patient.cpf.value,
+            susCard: patient.susCard.value,
+            birthDate: patient.birthDate.value.toISOString().split('T')[0],
+            birthCity: patient.birthCity,
+            phone: patient.phone.value,
+            gender: patient.gender,
+            educationLevel: patient.educationLevel,
+            raceColor: patient.raceColor,
+            currentAddress: patient.currentAddress,
+            isActive: patient.isActive,
         };
     }
 

@@ -2,6 +2,7 @@ import { BadRequestError } from "#shared/errors/HttpErrors"
 
 class Phone {
     private readonly _value: string
+
     private constructor(value: string) {
         this._value = value
     }
@@ -17,7 +18,7 @@ class Phone {
     }
 
     private static isValid(value: string): boolean {
-        const phoneRegex = /^\(?\d{2}\)?[\s-]?[\s9]?\d{4}-?\d{4}$/
+        const phoneRegex = /^\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}$/
         return phoneRegex.test(value)
     }
 

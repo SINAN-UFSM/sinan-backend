@@ -37,21 +37,8 @@ export class PatientCrudService implements PatientCrudServicePort {
         });
 
         const dbPatient = await this.patientRepository.create(newPatient);
-        const patientResponse: PatientResponseDTO = {
-            id: dbPatient.id as string,
-            name: dbPatient.name,
-            cpf: dbPatient.cpf.value,
-            susCard: dbPatient.susCard.value,
-            birthDate: dbPatient.birthDate.value,
-            birthCity: dbPatient.birthCity,
-            phone: dbPatient.phone.value,
-            gender: dbPatient.gender,
-            educationLevel: dbPatient.educationLevel,
-            raceColor: dbPatient.raceColor,
-            currentAddress: dbPatient.currentAddress,
-        }
 
-        return patientResponse;
+        return this.toResponseDTO(dbPatient);
     }
 
     async updatePatient(patientId: string, request: UpdatePatientRequestDTO): Promise<PatientResponseDTO> {
@@ -77,19 +64,7 @@ export class PatientCrudService implements PatientCrudServicePort {
 
         const dbPatient = await this.patientRepository.update(patientId, updatedPatientEntity);
 
-        return {
-            id: dbPatient.id as string,
-            name: dbPatient.name,
-            cpf: dbPatient.cpf.value,
-            susCard: dbPatient.susCard.value,
-            birthDate: dbPatient.birthDate.value,
-            birthCity: dbPatient.birthCity,
-            phone: dbPatient.phone.value,
-            gender: dbPatient.gender,
-            educationLevel: dbPatient.educationLevel,
-            raceColor: dbPatient.raceColor,
-            currentAddress: dbPatient.currentAddress,
-        };
+        return this.toResponseDTO(dbPatient);
     }
 
     async deletePatient(patientId: string): Promise<void> {
@@ -101,45 +76,21 @@ export class PatientCrudService implements PatientCrudServicePort {
         await this.patientRepository.delete(patientId);
     }
 
-    async readPatient(patientId: string): Promise<PatientResponseDTO | null> {
+    async readPatient(patientId: string): Promise<PatientResponseDTO> {
         const dbPatient = await this.patientRepository.findById(patientId);
         if (!dbPatient) {
             throw new NotFoundError(`Patient with ID ${patientId} not found`);
         }
 
-        const patientResponse: PatientResponseDTO = {
-            id: dbPatient.id as string,
-            name: dbPatient.name,
-            cpf: dbPatient.cpf.value,
-            susCard: dbPatient.susCard.value,
-            birthDate: dbPatient.birthDate.value,
-            birthCity: dbPatient.birthCity,
-            phone: dbPatient.phone.value,
-            gender: dbPatient.gender,
-            educationLevel: dbPatient.educationLevel,
-            raceColor: dbPatient.raceColor,
-            currentAddress: dbPatient.currentAddress,
-        };
-
-        return patientResponse;
+        return this.toResponseDTO(dbPatient);
     }
 
     async readPatients(queryDTO: ReadPatientsQueryDTO): Promise<PaginatedResponseDTO<PatientResponseDTO>> {
         const paginatedPatients = await this.patientRepository.findPaginated(queryDTO);
 
-        const patientResponses: PatientResponseDTO[] = paginatedPatients.data.map((dbPatient) => ({
-            id: dbPatient.id as string,
-            name: dbPatient.name,
-            cpf: dbPatient.cpf.value,
-            susCard: dbPatient.susCard.value,
-            birthDate: dbPatient.birthDate.value,
-            birthCity: dbPatient.birthCity,
-            phone: dbPatient.phone.value,
-            gender: dbPatient.gender,
-            educationLevel: dbPatient.educationLevel,
-            raceColor: dbPatient.raceColor,
-            currentAddress: dbPatient.currentAddress,
-        }));
+        const patientResponses: PatientResponseDTO[] = paginatedPatients.data.map((dbPatient) =>
+            this.toResponseDTO(dbPatient)
+        );
 
         return {
             data: patientResponses,
@@ -147,6 +98,22 @@ export class PatientCrudService implements PatientCrudServicePort {
             page: paginatedPatients.page,
             limit: paginatedPatients.limit,
             totalPages: paginatedPatients.totalPages,
+        };
+    }
+
+    private toResponseDTO(patient: Patient): PatientResponseDTO {
+        return {
+            id: patient.id as string,
+            name: patient.name,
+            cpf: patient.cpf.value,
+            susCard: patient.susCard.value,
+            birthDate: patient.birthDate.value,
+            birthCity: patient.birthCity,
+            phone: patient.phone.value,
+            gender: patient.gender,
+            educationLevel: patient.educationLevel,
+            raceColor: patient.raceColor,
+            currentAddress: patient.currentAddress,
         };
     }
 }

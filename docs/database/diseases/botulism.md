@@ -31,8 +31,8 @@
 | `race_color`         | `VARCHAR` | Raça / Cor.                             |
 | `education_level`    | `VARCHAR` | Nível de escolaridade.                  |
 | `sus_card_number`    | `VARCHAR` | Número do Cartão SUS.                   |
-| `residence_city`     | `VARCHAR` | Município de residência na época.       |
-| `residence_state`    | `VARCHAR` | UF de residência na época.              |
+| `birth_city`         | `VARCHAR` | Município de residência na época.       |
+| `current_address`    | `VARCHAR` | Endereço na época.                      |
 
 ### 2. Dados de Atendimento
 | Coluna Banco                     | Tipo SQL  | Descrição / Regra                                  |

@@ -23,7 +23,7 @@ export class PatientCrudController {
 
     async updatePatient(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = uuidParamSchema.parse(req.params.id);
+            const { id } = uuidParamSchema.parse(req.params);
             const patientDTO: UpdatePatientRequestDTO = updatePatientSchema.parse(req.body);
 
             const updatedPatient: PatientResponseDTO = await this.patientService.updatePatient(id, patientDTO);
@@ -36,7 +36,7 @@ export class PatientCrudController {
 
     async deletePatient(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = uuidParamSchema.parse(req.params.id);
+            const { id } = uuidParamSchema.parse(req.params);
             await this.patientService.deletePatient(id);
             res.status(204).send();
         } catch (error: unknown) {
@@ -46,7 +46,7 @@ export class PatientCrudController {
 
     async getPatient(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = uuidParamSchema.parse(req.params.id);
+            const { id } = uuidParamSchema.parse(req.params);
             const patient: PatientResponseDTO | null = await this.patientService.readPatient(id);
 
             res.status(200).json(patient);

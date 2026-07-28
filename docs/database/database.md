@@ -1,3 +1,5 @@
+# Database Diagram
+
 ```mermaid
 ---
 config:
@@ -40,7 +42,7 @@ erDiagram
     patients {
         uuid id PK ""  
         varchar name  ""  
-        varchar document  ""  
+        varchar cpf  ""  
         varchar sus_card  ""  
         date birth_date  ""  
         varchar birth_city  ""  
