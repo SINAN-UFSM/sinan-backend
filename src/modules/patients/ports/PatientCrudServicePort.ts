@@ -4,8 +4,8 @@ import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
 export const createPatientSchema = z.object({
     name: z.string().min(3, 'Name must be at least 3 characters long'),
-    cpf: z.string().min(11, 'CPF must be at least 11 digits long').max(11, 'CPF must be at most 11 digits long'),
-    susCard: z.string().min(15, 'SUS Card must be at least 15 digits long').max(15, 'SUS Card must be at most 15 digits long'),
+    cpf: z.string().min(11, 'CPF must be at least 11 digits long').max(20, 'Invalid CPF format'),
+    susCard: z.string().min(15, 'SUS Card must be at least 15 digits long').max(30, 'Invalid SUS Card format'),
 
     birthDate: z.coerce.date({
         error: "Birth date is required",
@@ -13,7 +13,7 @@ export const createPatientSchema = z.object({
     }),
 
     birthCity: z.string().min(1, 'Birth city is required'),
-    phone: z.string().min(10, 'Invalid phone number').max(11, 'Invalid phone number'),
+    phone: z.string().min(10, 'Invalid phone number').max(20, 'Invalid phone format'),
 
     gender: z.enum(Gender, { message: 'Invalid gender' }),
     educationLevel: z.enum(EducationLevel, { message: 'Invalid education level' }),
