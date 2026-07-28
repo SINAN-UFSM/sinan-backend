@@ -1,5 +1,5 @@
 import { UnitCrudController } from "#modules/units/controllers/UnitCrudController";
-import { UnitCrudService } from "../services/UnitCrudService.js";
+import { UnitCrudService } from "#modules/units/services/UnitCrudService";
 import { DrizzleUnitRepository } from "#modules/units/repositories/DrizzleUnitRepository";
 
 export const makeUnitCrudController = (): UnitCrudController => {
