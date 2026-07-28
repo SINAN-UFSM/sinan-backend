@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, integer, pgEnum, timestamp, boolean, index, serial } from 'drizzle-orm/pg-core';
-import { text } from 'drizzle-orm/pg-core';
+import { text, date } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 const roleEnum = pgEnum('role', ['admin', 'user']);
@@ -42,10 +42,32 @@ const refreshTokensTable = pgTable('refresh_tokens', {
     index('token_hash_index').on(table.tokenHash),
 ]);
 
+const patientsTable = pgTable('patients', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: varchar('name', { length: 255 }).notNull(),
+    cpf: varchar('cpf', { length: 11 }).notNull().unique(),
+    susCard: varchar('sus_card', { length: 15 }).notNull().unique(),
+    birthDate: date('birth_date').notNull(),
+    birthCity: varchar('birth_city', { length: 255 }).notNull(),
+    phone: varchar('phone', { length: 15 }).notNull(),
+    gender: varchar('gender', { length: 50 }).notNull(),
+    educationLevel: varchar('education_level', { length: 100 }).notNull(),
+    raceColor: varchar('race_color', { length: 100 }).notNull(),
+    currentAddress: varchar('current_address', { length: 255 }).notNull(),
+    isActive: boolean('is_active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+    index('patient_cpf_index').on(table.cpf),
+    index('patient_sus_card_index').on(table.susCard),
+]);
+
 type DbUser = typeof usersTable.$inferSelect;
 type DbUserInsert = typeof usersTable.$inferInsert;
 type DbUnit = typeof unitsTable.$inferSelect;
 type DbUnitInsert = typeof unitsTable.$inferInsert;
+type DbPatient = typeof patientsTable.$inferSelect;
+type DbPatientInsert = typeof patientsTable.$inferInsert;
 
-export { usersTable, roleEnum, refreshTokensTable, unitsTable };
-export type { DbUser, DbUserInsert, DbUnit, DbUnitInsert };
+export { usersTable, roleEnum, refreshTokensTable, unitsTable, patientsTable };
+export type { DbUser, DbUserInsert, DbUnit, DbUnitInsert, DbPatient, DbPatientInsert };

@@ -12,11 +12,12 @@ import YAML from 'yamljs';
 import { makeUserCrudController } from '#modules/users/factories/makeUserCrudController';
 import { makeUserAuthController } from '#modules/users/factories/makeUserAuthController';
 import { makeUnitCrudController } from '#modules/units/factories/makeUnitCrudController';
+import { makePatientCrudController } from '#modules/patients/factories/makePatientCrudController';
 
-import { verifyBearerToken } from './middlewares/verifyBearerToken.js';
+import { verifyBearerToken } from '#shared/infra/http/middlewares/verifyBearerToken';
 
-import { requireAdmin } from './middlewares/requireAdmin.js';
-import { requireAdminOrOwner } from './middlewares/requireAdminOrOwner.js';
+import { requireAdmin } from '#shared/infra/http/middlewares/requireAdmin';
+import { requireAdminOrOwner } from '#shared/infra/http/middlewares/requireAdminOrOwner';
 
 const router = Router();
 
@@ -36,6 +37,13 @@ router.post('/api/v1/units', verifyBearerToken, unitController.createUnit.bind(u
 router.get('/api/v1/units/:id', verifyBearerToken, unitController.getUnit.bind(unitController));
 router.patch('/api/v1/units/:id', verifyBearerToken, unitController.updateUnit.bind(unitController));
 router.delete('/api/v1/units/:id', verifyBearerToken, unitController.deleteUnit.bind(unitController));
+
+const patientController = makePatientCrudController();
+router.get('/api/v1/patients', verifyBearerToken, patientController.getPatients.bind(patientController));
+router.post('/api/v1/patients', verifyBearerToken, patientController.createPatient.bind(patientController));
+router.get('/api/v1/patients/:id', verifyBearerToken, patientController.getPatient.bind(patientController));
+router.patch('/api/v1/patients/:id', verifyBearerToken, patientController.updatePatient.bind(patientController));
+router.delete('/api/v1/patients/:id', verifyBearerToken, patientController.deletePatient.bind(patientController));
 
 router.get('/health', (_: Request, res: Response) => {
     return res.status(200).json(

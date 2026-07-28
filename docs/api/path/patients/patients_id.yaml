@@ -24,7 +24,7 @@ get:
       $ref: "../components/errors.yaml#/responses/500"
 
 # --- PUT METHOD ---
-put:
+patch:
   summary: Alterar dados do paciente
   description: Altera os dados cadastrais de um paciente existente.
   operationId: atualizarPaciente
