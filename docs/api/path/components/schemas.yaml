@@ -106,57 +106,65 @@ PatientBase:
   type: object
   required:
     - name
-    - document
-    - birth_date
-    - birth_city
-    - sus_card
-    - race_color
+    - cpf
+    - susCard
+    - birthDate
+    - birthCity
+    - phone
     - gender
-    - education_level
+    - educationLevel
+    - raceColor
+    - currentAddress
   properties:
     name:
       type: string
+      minLength: 3
       description: Nome completo do paciente.
       example: "João da Silva"
-    document:
+    cpf:
       type: string
-      description: CPF válido (apenas números).
+      minLength: 11
+      maxLength: 20
+      description: CPF do paciente (apenas números ou formatado).
       example: "12345678900"
-      pattern: "^[0-9]{11}$"
-    sus_card:
+    susCard:
       type: string
+      minLength: 15
+      maxLength: 30
       description: Número do cartão SUS do paciente.
-      example: "^[0-9]{15}$"
-    birth_date:
+      example: "700000000000000"
+    birthDate:
       type: string
       format: date
       description: Data de nascimento do paciente.
       example: "1990-05-15"
-    birth_city:
+    birthCity:
       type: string
+      minLength: 1
       description: Cidade de nascimento do paciente.
       example: "Rio de Janeiro"
     phone:
       type: string
-      nullable: true
-      description: Número de telefone do paciente (opcional).
-      example: "+55 11 91234-5678"
+      minLength: 10
+      maxLength: 20
+      description: Número de telefone do paciente.
+      example: "+5511912345678"
     gender:
       type: string
-      description: Gênero do paciente.
-      example: "Masculino"
-    education_level:
+      description: Gênero do paciente (mapeado pelo Enum Gender).
+      example: "MALE"
+    educationLevel:
       type: string
-      description: Nível de escolaridade do paciente.
-      example: "Superior Completo"
-    race_color:
+      description: Nível de escolaridade do paciente (mapeado pelo Enum EducationLevel).
+      example: "SUPERIOR_COMPLETO"
+    raceColor:
       type: string
-      description: Raça/cor autodeclarada do paciente.
-      example: "Branca"
-    current_address:
+      description: Raça/cor autodeclarada do paciente (mapeado pelo Enum RaceColor).
+      example: "BRANCA"
+    currentAddress:
       type: string
-      nullable: true
-      description: Endereço atual do paciente (opcional).
+      minLength: 5
+      description: Endereço atual do paciente.
       example: "Rua das Flores, 123, Bairro Jardim, São Paulo - SP"
 
 PatientResponse:
@@ -167,9 +175,10 @@ PatientResponse:
         - id
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
           description: ID único do paciente.
-          example: 105
+          example: "550e8400-e29b-41d4-a716-446655440000"
         isActive:
           type: boolean
           description: Indica se o paciente está ativo no cadastro lógico.
@@ -180,8 +189,73 @@ PatientCreateRequest:
     - $ref: "#/PatientBase"
 
 PatientUpdateRequest:
-  allOf:
-    - $ref: "#/PatientBase"
+  type: object
+  description: Campos para atualização parcial do paciente.
+  properties:
+    name:
+      type: string
+      minLength: 3
+    cpf:
+      type: string
+      minLength: 11
+      maxLength: 20
+    susCard:
+      type: string
+      minLength: 15
+      maxLength: 30
+    birthDate:
+      type: string
+      format: date
+    birthCity:
+      type: string
+      minLength: 1
+    phone:
+      type: string
+      minLength: 10
+      maxLength: 20
+    gender:
+      type: string
+    educationLevel:
+      type: string
+    raceColor:
+      type: string
+    currentAddress:
+      type: string
+      minLength: 5
+
+PaginatedPatientList:
+  type: object
+  required:
+    - data
+    - page
+    - limit
+    - total
+    - totalPages
+  properties:
+    count:
+      type: integer
+      description: Quantidade de registros na página atual.
+      example: 10
+    page:
+      type: integer
+      description: Número da página atual.
+      example: 1
+    limit:
+      type: integer
+      description: Quantidade máxima de itens por página.
+      example: 10
+    total:
+      type: integer
+      description: Total geral de registros encontrados.
+      example: 150
+    totalPages:
+      type: integer
+      description: Total de páginas disponíveis.
+      example: 15
+    data:
+      type: array
+      items:
+        $ref: "#/PatientResponse"
 
 # --- UNITS SCHEMA ---
 UnitBase:
@@ -210,7 +284,7 @@ UnitResponse:
         id:
           type: integer
           description: ID único da unidade (gerado pelo banco).
-          example: 12
+          example: 1
         isActive:
           type: boolean
           description: Indica se a unidade está ativa no cadastro lógico.
@@ -219,6 +293,23 @@ UnitResponse:
 UnitCreateRequest:
   allOf:
     - $ref: "#/UnitBase"
+
+UnitUpdateRequest:
+  type: object
+  description: Campos para atualização parcial da unidade de saúde.
+  properties:
+    name:
+      type: string
+      description: Nome oficial da unidade de saúde.
+      example: "UPA 24h - Centro"
+    city:
+      type: string
+      description: Cidade onde a unidade está localizada.
+      example: "São Paulo"
+    state:
+      type: string
+      description: Estado onde a unidade está localizada (sigla).
+      example: "SP"
 
 PaginatedUnitList:
   type: object
@@ -258,275 +349,207 @@ PaginatedUnitList:
 NotificationBase:
   type: object
   required:
-    - patient_id
-    - unitId
-    - status
-    - notification_date
-    - occurrence_date
-    - notification_type_slug
+    - patientId
+    - notificationTypeSlug
+    - dtNotification
+    - occurrenceDate
   properties:
-    patient_id:
-      type: integer
-      description: ID do paciente.
-      example: 55
-    unitId:
-      type: integer
-      description: ID da unidade de saúde.
-      example: 12
-    user_id:
-      type: integer
-      readOnly: true
-      description: ID do usuário responsável pelo registro (definido pelo backend).
-      example: 7
-    status:
+    patientId:
       type: string
-      description: Status atual da notificação.
-      example: "draft"
-    notification_type_slug:
+      format: uuid
+      description: ID do paciente.
+      example: "550e8400-e29b-41d4-a716-446655440000"
+    notificationTypeSlug:
       type: string
       description: Identificador do agravo.
-      example: "dengue"
-    notification_date:
+      example: "botulism"
+    dtNotification:
       type: string
       format: date
       description: Data da notificação.
       example: "2026-06-25"
-    occurrence_date:
+    occurrenceDate:
       type: string
       format: date
-      description: Data da ocorrência.
+      description: Data do sintoma/ocorrência.
       example: "2026-06-20"
+    unitId:
+      type: integer
+      description: ID da unidade de saúde.
+      example: 12
+    status:
+      type: string
+      description: Status atual da notificação.
+      default: "ACTIVE"
+      example: "ACTIVE"
     notes:
       type: string
       nullable: true
       description: Observações adicionais sobre a notificação.
       example: "Paciente internado."
 
+# --- SCHEMAS DE REQUISIÇÃO (CREATE E UPDATE) ---
 CreateNotificationRequest:
   description: Requisição para criar uma nova notificação.
   oneOf:
-    - $ref: "#/DengueCreateRequest"
+    - $ref: "#/BotulismCreateRequest"
+    # - $ref: "#/DengueCreateRequest" (Futuro)
   discriminator:
-    propertyName: notification_type_slug
+    propertyName: notificationTypeSlug
     mapping:
-      dengue: "#/DengueCreateRequest"
+      botulism: "#/BotulismCreateRequest"
 
-PolymorphicNotificationResponse:
-  description: Resposta dinâmica retornada após a criação da notificação.
+UpdateNotificationRequest:
+  description: Requisição para atualizar uma notificação. Todos os campos tornam-se opcionais.
   oneOf:
-    - $ref: "#/DengueNotificationResponse"
+    - $ref: "#/BotulismUpdateRequest"
   discriminator:
-    propertyName: notification_type_slug
+    propertyName: notificationTypeSlug
     mapping:
-      dengue: "#/DengueNotificationResponse"
+      botulism: "#/BotulismUpdateRequest"
 
 # --- NOTIFICATION RESPONSE SCHEMA ---
 NotificationResponse:
   allOf:
     - $ref: "#/NotificationBase"
     - type: object
+      required:
+        - id
+        - specificFields
       properties:
         id:
-          type: integer
-          description: ID único da notificação (gerado pelo sistema).
-          example: 1042
-        created_at:
+          type: string
+          format: uuid
+          description: ID único da notificação.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        patientName:
+          type: string
+          description: Nome do paciente (trazido pelo DTO).
+          example: "João da Silva"
+        patientCpf:
+          type: string
+          description: CPF do paciente (trazido pelo DTO).
+          example: "12345678900"
+        createdAt:
           type: string
           format: date-time
           description: Data/hora de criação da notificação.
           example: "2026-07-01T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data/hora da última atualização.
+          example: "2026-07-01T10:30:00Z"
+        specificFields:
+          type: object
+          description: Campos específicos do agravo.
+
+PolymorphicNotificationResponse:
+  description: Resposta dinâmica retornada após a criação/leitura da notificação.
+  oneOf:
+    - $ref: "#/BotulismNotificationResponse"
+  discriminator:
+    propertyName: notificationTypeSlug
+    mapping:
+      botulism: "#/BotulismNotificationResponse"
 
 PaginatedNotificationList:
   type: object
+  required:
+    - data
+    - page
+    - limit
+    - total
+    - totalPages
   properties:
     count:
       type: integer
-      description: Total geral de notificações no banco.
-      example: 1530
-    next:
-      type: string
-      nullable: true
-      description: URL para a próxima página.
-      example: "http://localhost:8000/api/v1/notifications?page=2"
-    previous:
-      type: string
-      nullable: true
-      description: URL para a página anterior.
-      example: null
-    results:
+      description: Quantidade de registros na página atual.
+      example: 10
+    page:
+      type: integer
+      description: Número da página atual.
+      example: 1
+    limit:
+      type: integer
+      description: Quantidade máxima de itens por página.
+      example: 10
+    total:
+      type: integer
+      description: Total geral de registros encontrados.
+      example: 150
+    totalPages:
+      type: integer
+      description: Total de páginas disponíveis.
+      example: 15
+    data:
       type: array
       items:
-        $ref: "#/NotificationResponse"
+        $ref: "#/PolymorphicNotificationResponse"
 
-# --- DENGUE NOTIFICATION SCHEMAS ---
-DengueSpecificFields:
+# --- BOTULISM NOTIFICATION SCHEMAS ---
+BotulismSpecificFields:
   type: object
-  description: Campos específicos da ficha de Dengue/Chikungunya enviados em specific_fields.
+  description: Campos específicos da ficha de Botulismo.
   additionalProperties: true
   properties:
-    occupation:
-      type: string
-      description: Ocupação informada na ficha do agravo (campo opcional e específico deste formulário).
-      example: "Técnico de enfermagem"
-    st_fever:
-      type: string
-      example: "yes"
-    st_myalgia:
-      type: string
-      example: "yes"
-    st_headache:
-      type: string
-      example: "yes"
-    st_exanthema:
-      type: string
-      example: "no"
-    st_vomiting:
-      type: string
-      example: "no"
-    st_nausea:
-      type: string
-      example: "yes"
-    st_back_pain:
-      type: string
-      example: "no"
-    st_conjunctivitis:
-      type: string
-      example: "no"
-    st_arthritis:
-      type: string
-      example: "no"
-    st_severe_arthralgia:
-      type: string
-      example: "yes"
-    st_petechiae:
-      type: string
-      example: "no"
-    st_leukopenia:
-      type: string
-      example: "unknown"
-    st_tourniquet_test:
-      type: string
-      example: "no"
-    st_retroorbital_pain:
-      type: string
-      example: "yes"
-    dt_den_ns1:
+    dt_first_attendance:
       type: string
       format: date
-      example: "2026-06-22"
-    res_den_ns1:
-      type: string
-      example: "reactive"
-    dt_den_igm:
-      type: string
-      format: date
-      example: "2026-06-23"
-    res_den_igm:
-      type: string
-      example: "non_reactive"
-    dt_chik_igm_s1:
+      description: Data do 1º atendimento.
+    nu_attendances_until_suspicion:
+      type: integer
+      description: Número de atendimentos até suspeição.
+    dt_clinical_suspicion:
       type: string
       format: date
-      example: "2026-06-23"
-    dt_chik_igm_s2:
+      description: Data da suspeição clínica.
+    st_hospitalization_occurred:
       type: string
-      format: date
-      example: "2026-06-28"
-    st_hospitalization:
-      type: string
-      example: "unknown"
-    dt_hospitalization:
-      type: string
-      format: date
-      example: "2026-06-24"
-    st_autochthonous:
-      type: string
-      example: "indeterminate"
-    tp_final_classification:
-      type: string
-      example: "11"
-    tp_confirmation_criteria:
-      type: string
-      example: "1"
-    tp_clinical_presentation:
-      type: string
-      example: "1"
-    tp_evolution:
-      type: string
-      example: "1"
-    dt_closing:
-      type: string
-      format: date
-      example: "2026-07-01"
-    additional_observations:
-      type: string
-      example: "Paciente acompanhado em unidade de referência."
+      maxLength: 1
+      description: Ocorreu hospitalização? (1-Sim, 2-Não, 9-Ignorado)
+    # ... (A propriedade additionalProperties: true garante que o Swagger aceite
+    # todos os 69 campos do seu JSON dinamicamente sem poluir a documentação inteira)
 
-DengueCreateRequest:
+BotulismCreateRequest:
   allOf:
     - $ref: "#/NotificationBase"
     - type: object
       required:
-        - notification_type_slug
-        - specific_fields
+        - notificationTypeSlug
+        - specificFields
       properties:
-        notification_type_slug:
+        notificationTypeSlug:
           type: string
-          enum: ["dengue"]
-          description: Identificador do agravo.
-          example: "dengue"
-        specific_fields:
-          $ref: "#/DengueSpecificFields"
-  example:
-    patient_id: 55
-    unitId: 12
-    status: "draft"
-    notification_type_slug: "dengue"
-    notification_date: "2026-06-25"
-    occurrence_date: "2026-06-20"
-    notes: "Paciente internado."
-    specific_fields:
-      dt_investigation: "2026-06-21"
-      occupation: "Técnico de enfermagem"
-      st_fever: "yes"
-      st_myalgia: "yes"
-      st_headache: "yes"
-      st_severe_arthralgia: "yes"
-      dt_den_ns1: "2026-06-22"
-      res_den_ns1: "reactive"
-      st_hospitalization: "unknown"
-      tp_final_classification: "11"
-      tp_evolution: "1"
-      dt_closing: "2026-07-01"
+          enum: ["botulism"]
+        specificFields:
+          $ref: "#/BotulismSpecificFields"
 
-DengueNotificationResponse:
+BotulismUpdateRequest:
+  type: object
+  properties:
+    notificationTypeSlug:
+      type: string
+      enum: ["botulism"]
+    dtNotification:
+      type: string
+      format: date
+    occurrenceDate:
+      type: string
+      format: date
+    unitId:
+      type: integer
+    status:
+      type: string
+    notes:
+      type: string
+    specificFields:
+      $ref: "#/BotulismSpecificFields"
+
+BotulismNotificationResponse:
   allOf:
     - $ref: "#/NotificationResponse"
     - type: object
       properties:
-        specific_fields:
-          $ref: "#/DengueSpecificFields"
-  example:
-    id: 1042
-    patient_id: 55
-    unitId: 12
-    user_id: 7
-    status: "published"
-    notification_type_slug: "dengue"
-    notification_date: "2026-06-25"
-    occurrence_date: "2026-06-20"
-    notes: "Paciente internado."
-    created_at: "2026-07-01T10:30:00Z"
-    specific_fields:
-      dt_investigation: "2026-06-21"
-      occupation: "Técnico de enfermagem"
-      st_fever: "yes"
-      st_myalgia: "yes"
-      st_headache: "yes"
-      st_severe_arthralgia: "yes"
-      dt_den_ns1: "2026-06-22"
-      res_den_ns1: "reactive"
-      st_hospitalization: "unknown"
-      tp_final_classification: "11"
-      tp_evolution: "1"
-      dt_closing: "2026-07-01"
+        specificFields:
+          $ref: "#/BotulismSpecificFields"

@@ -3,120 +3,64 @@
 # --- GET METHOD ---
 get:
   summary: Consultar notificação por ID (Polimórfico)
-  description: >
-    Retorna os dados completos de uma notificação específica, incluindo 
-    informações detalhadas do paciente, unidade de saúde e agravo.
   tags:
     - Notificações (Geral)
   operationId: consultarNotificacaoPorID
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
-    # --- SUCCESS RESPONSE ---
     "200":
       description: Notificação retornada com sucesso.
       content:
         application/json:
           schema:
             $ref: "../components/schemas.yaml#/PolymorphicNotificationResponse"
-    # --- NOT FOUND RESPONSE ---
     "404":
       $ref: "../components/errors.yaml#/responses/404"
-    # --- BAD REQUEST RESPONSE ---
-    "400":
-      $ref: "../components/errors.yaml#/responses/400"
-    # --- UNAUTHORIZED ACCESS RESPONSE ---
-    "401":
-      $ref: "../components/errors.yaml#/responses/401"
-    # --- INTERNAL SERVER ERROR RESPONSE ---
     "500":
       $ref: "../components/errors.yaml#/responses/500"
 
-put:
+# --- PATCH METHOD ---
+patch:
   summary: Atualizar notificação por ID (Polimórfico)
-  description: >
-    Atualiza os dados de uma notificação específica, permitindo a modificação 
-    de informações detalhadas do paciente, unidade de saúde e agravo.
   tags:
     - Notificações (Geral)
   operationId: atualizarNotificacaoPorID
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   requestBody:
-    description: Dados da notificação a serem atualizados.
+    description: Dados parciais da notificação a serem atualizados.
     required: true
     content:
       application/json:
         schema:
-          $ref: "../components/schemas.yaml#/CreateNotificationRequest"
-        examples:
-          dengueCompleto:
-            summary: Exemplo completo para atualização de notificação
-            value:
-              patient_id: 55
-              unitId: 12
-              status: "published"
-              notification_type_slug: "dengue"
-              notification_date: "2026-06-25"
-              occurrence_date: "2026-06-20"
-              notes: "Paciente reavaliado e caso encerrado."
-              specific_fields:
-                dt_investigation: "2026-06-21"
-                occupation: "Técnico de enfermagem"
-                st_fever: "no"
-                st_myalgia: "no"
-                st_headache: "no"
-                st_severe_arthralgia: "yes"
-                dt_den_ns1: "2026-06-22"
-                res_den_ns1: "reactive"
-                st_hospitalization: "unknown"
-                tp_final_classification: "11"
-                tp_evolution: "1"
-                dt_closing: "2026-07-01"
+          $ref: "../components/schemas.yaml#/UpdateNotificationRequest"
   responses:
-    # --- SUCCESS RESPONSE ---
     "200":
       description: Notificação atualizada com sucesso.
       content:
         application/json:
           schema:
             $ref: "../components/schemas.yaml#/PolymorphicNotificationResponse"
-    # --- NOT FOUND RESPONSE ---
-    "404":
-      $ref: "../components/errors.yaml#/responses/404"
-    # --- BAD REQUEST RESPONSE ---
     "400":
       $ref: "../components/errors.yaml#/responses/400"
-    # --- UNAUTHORIZED ACCESS RESPONSE ---
-    "401":
-      $ref: "../components/errors.yaml#/responses/401"
-    # --- INTERNAL SERVER ERROR RESPONSE ---
+    "404":
+      $ref: "../components/errors.yaml#/responses/404"
     "500":
       $ref: "../components/errors.yaml#/responses/500"
 
 # --- DELETE METHOD ---
 delete:
-  summary: Excluir notificação por ID (Polimórfico)
-  description: >
-    Remove uma notificação específica do sistema.
+  summary: Excluir notificação por ID
   tags:
     - Notificações (Geral)
   operationId: excluirNotificacaoPorID
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
-    # --- SUCCESS WITH NO CONTENT RESPONSE ---
     "204":
-      description: Notificação excluída com sucesso. Nenhum conteúdo retornado.
-    # --- BAD REQUEST RESPONSE ---
-    "400":
-      $ref: "../components/errors.yaml#/responses/400"
-    # --- UNAUTHORIZED ACCESS RESPONSE ---
-    "401":
-      $ref: "../components/errors.yaml#/responses/401"
-    # --- NOT FOUND RESPONSE ---
+      description: Notificação excluída com sucesso.
     "404":
       $ref: "../components/errors.yaml#/responses/404"
-    # --- INTERNAL SERVER ERROR RESPONSE ---
     "500":
       $ref: "../components/errors.yaml#/responses/500"

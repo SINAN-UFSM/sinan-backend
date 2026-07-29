@@ -8,7 +8,7 @@ get:
   tags:
     - Pacientes
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
     "200":
       description: Dados do paciente recuperados com sucesso.
@@ -23,7 +23,7 @@ get:
     "500":
       $ref: "../components/errors.yaml#/responses/500"
 
-# --- PUT METHOD ---
+# --- PATCH METHOD ---
 patch:
   summary: Alterar dados do paciente
   description: Altera os dados cadastrais de um paciente existente.
@@ -31,7 +31,7 @@ patch:
   tags:
     - Pacientes
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   requestBody:
     required: true
     content:
@@ -62,7 +62,7 @@ delete:
   tags:
     - Pacientes
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
     "204":
       description: Paciente excluído com sucesso (Sem conteúdo de retorno).

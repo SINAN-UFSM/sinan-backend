@@ -12,9 +12,10 @@ patch:
     - name: id
       in: path
       required: true
-      description: ID do usuário a ser atualizado.
+      description: UUID do usuário a ser atualizado.
       schema:
         type: string
+        format: uuid
   requestBody:
     required: true
     content:
@@ -63,9 +64,10 @@ delete:
     - name: id
       in: path
       required: true
-      description: ID do usuário a ser deletado.
+      description: UUID do usuário a ser deletado.
       schema:
         type: string
+        format: uuid
   responses:
     "204":
       description: Usuário deletado com sucesso.

@@ -22,17 +22,17 @@
 | `notification_id` | `UUID`   | **PK e FK**. Referência direta ao ID gerado na tabela `notifications`. |
 
 ### 1. Dados do Paciente (Snapshot)
-| Coluna Banco         | Tipo SQL  | Descrição / Regra                       |
-| :------------------- | :-------- | :-------------------------------------- |
-| `patient_name`       | `VARCHAR` | Nome do paciente no dia da notificação. |
-| `patient_cpf`        | `VARCHAR` | CPF.                                    |
-| `patient_birth_date` | `DATE`    | Data de nascimento.                     |
-| `sex`                | `VARCHAR` | Sexo.                                   |
-| `race_color`         | `VARCHAR` | Raça / Cor.                             |
-| `education_level`    | `VARCHAR` | Nível de escolaridade.                  |
-| `sus_card_number`    | `VARCHAR` | Número do Cartão SUS.                   |
-| `birth_city`         | `VARCHAR` | Município de residência na época.       |
-| `current_address`    | `VARCHAR` | Endereço na época.                      |
+| Coluna Banco              | Tipo SQL  | Descrição / Regra                       |
+| :------------------------ | :-------- | :-------------------------------------- |
+| `patient_name`            | `VARCHAR` | Nome do paciente no dia da notificação. |
+| `patient_cpf`             | `VARCHAR` | CPF.                                    |
+| `patient_birth_date`      | `DATE`    | Data de nascimento.                     |
+| `patient_gender`          | `VARCHAR` | Sexo.                                   |
+| `patient_race_color`      | `VARCHAR` | Raça / Cor.                             |
+| `patient_education_level` | `VARCHAR` | Nível de escolaridade.                  |
+| `patient_sus_card`        | `VARCHAR` | Número do Cartão SUS.                   |
+| `patient_birth_city`      | `VARCHAR` | Município de residência na época.       |
+| `patient_current_address` | `VARCHAR` | Endereço na época.                      |
 
 ### 2. Dados de Atendimento
 | Coluna Banco                     | Tipo SQL  | Descrição / Regra                                  |

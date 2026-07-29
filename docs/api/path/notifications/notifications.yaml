@@ -3,93 +3,56 @@
 # --- GET METHOD ---
 get:
   summary: Listar notificações no sistema SINAN.
-  description: >
-    Retorna uma lista com todas as notificações cadastradas no sistema, 
-    contendo apenas os dados gerais (comuns a todos os agravos).
+  description: Retorna uma lista com todas as notificações cadastradas no sistema.
   tags:
     - Notificações (Geral)
   operationId: listarNotificacoes
   parameters:
     - $ref: "../components/parameters.yaml#/PageParam"
-    - $ref: "../components/parameters.yaml#/PageSizeParam"
-    - $ref: "../components/parameters.yaml#/SearchParam"
-    - $ref: "../components/parameters.yaml#/StartDateParam"
-    - $ref: "../components/parameters.yaml#/EndDateParam"
-    - $ref: "../components/parameters.yaml#/DiseaseIDParam"
-    - $ref: "../components/parameters.yaml#/PatientIDParam"
-    - $ref: "../components/parameters.yaml#/UnitIDParam"
+    - $ref: "../components/parameters.yaml#/LimitParam" # Ajustado
+    - $ref: "../components/parameters.yaml#/PatientIDParam" # Já definimos como UUID no arquivo de params
+    - name: notificationTypeSlug
+      in: query
+      required: false
+      description: Filtrar por tipo de agravo.
+      schema:
+        type: string
+        example: "botulism"
   responses:
-    # --- SUCCESS RESPONSE ---
     "200":
-      description: Lista de notificações retornada com sucesso (pode ser vazia).
+      description: Lista de notificações retornada com sucesso.
       content:
         application/json:
           schema:
             $ref: "../components/schemas.yaml#/PaginatedNotificationList"
-    # --- BAD REQUEST RESPONSE ---
-    "400":
-      $ref: "../components/errors.yaml#/responses/400"
-    # --- UNAUTHORIZED ACCESS RESPONSE ---
     "401":
       $ref: "../components/errors.yaml#/responses/401"
-    # --- INTERNAL SERVER ERROR RESPONSE ---
     "500":
       $ref: "../components/errors.yaml#/responses/500"
 
 # --- POST METHOD ---
 post:
   summary: Criar nova notificação (Polimórfico)
-  description: >
-    Cria uma nova notificação no sistema. O payload deve conter o `notification_type_slug` 
-    para definir qual agravo específico está sendo registrado.
+  description: Cria uma nova notificação. O payload deve conter o `notificationTypeSlug`.
   tags:
     - Notificações (Geral)
   operationId: criarNotificacao
   requestBody:
-    description: Dados da nova notificação a ser criada.
     required: true
     content:
       application/json:
         schema:
           $ref: "../components/schemas.yaml#/CreateNotificationRequest"
-        examples:
-          dengueCompleto:
-            summary: Exemplo completo de notificação de Dengue/Chikungunya
-            value:
-              patient_id: 55
-              unitId: 12
-              status: "draft"
-              notification_type_slug: "dengue"
-              notification_date: "2026-06-25"
-              occurrence_date: "2026-06-20"
-              notes: "Paciente internado."
-              specific_fields:
-                dt_investigation: "2026-06-21"
-                occupation: "Técnico de enfermagem"
-                st_fever: "yes"
-                st_myalgia: "yes"
-                st_headache: "yes"
-                st_severe_arthralgia: "yes"
-                dt_den_ns1: "2026-06-22"
-                res_den_ns1: "reactive"
-                st_hospitalization: "unknown"
-                tp_final_classification: "11"
-                tp_evolution: "1"
-                dt_closing: "2026-07-01"
   responses:
-    # --- CREATED RESPONSE ---
     "201":
       description: Notificação criada com sucesso.
       content:
         application/json:
           schema:
             $ref: "../components/schemas.yaml#/PolymorphicNotificationResponse"
-    # --- BAD REQUEST RESPONSE ---
     "400":
       $ref: "../components/errors.yaml#/responses/400"
-    # --- UNAUTHORIZED ACCESS RESPONSE ---
     "401":
       $ref: "../components/errors.yaml#/responses/401"
-    # --- INTERNAL SERVER ERROR RESPONSE ---
     "500":
       $ref: "../components/errors.yaml#/responses/500"

@@ -2,42 +2,68 @@
 
 get:
   summary: Listar pacientes
-  description: Retorna uma lista paginada com todos os pacientes cadastrados no sistema.
+  description: Retorna uma lista paginada com todos os pacientes cadastrados no sistema, permitindo filtros específicos.
   operationId: listarPacientes
   tags:
     - Pacientes
   parameters:
-    - $ref: "../components/parameters.yaml#/PageParam"
-    - $ref: "../components/parameters.yaml#/PageSizeParam"
-    - $ref: "../components/parameters.yaml#/SearchParam"
+    # Parâmetros de paginação e busca global (assumindo que você tem eles no parameters.yaml)
+    - $ref: "../components/parameters.yaml#/PageParam" # Mapeia para "page"
+    - $ref: "../components/parameters.yaml#/LimitParam" # Mapeia para "limit" (se chamar PageSizeParam, troque o nome)
+    - $ref: "../components/parameters.yaml#/SearchParam" # Mapeia para "search"
+
+    # Adição dos parâmetros específicos do seu readPatientsQuerySchema (Zod)
+    - name: name
+      in: query
+      schema:
+        type: string
+    - name: cpf
+      in: query
+      schema:
+        type: string
+    - name: susCard
+      in: query
+      schema:
+        type: string
+    - name: birthCity
+      in: query
+      schema:
+        type: string
+    - name: phone
+      in: query
+      schema:
+        type: string
+    - name: gender
+      in: query
+      schema:
+        type: string
+    - name: educationLevel
+      in: query
+      schema:
+        type: string
+    - name: raceColor
+      in: query
+      schema:
+        type: string
+    - name: currentAddress
+      in: query
+      schema:
+        type: string
+    - name: isActive
+      in: query
+      schema:
+        type: boolean
   responses:
     "200":
       description: Lista de pacientes recuperada com sucesso.
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              count:
-                type: integer
-                description: Total de registros encontrados.
-                example: 105
-              next:
-                type: string
-                nullable: true
-                description: URL para a próxima página de resultados.
-                example: "https://api.sinan.gov.br/api/v1/patients?page=2"
-              previous:
-                type: string
-                nullable: true
-                description: URL para a página anterior de resultados.
-                example: null
-              results:
-                type: array
-                items:
-                  $ref: "../components/schemas.yaml#/PatientResponse"
+            $ref: "../components/schemas.yaml#/PaginatedPatientList"
     "401":
       $ref: "../components/errors.yaml#/responses/401"
+    "500":
+      $ref: "../components/errors.yaml#/responses/500"
 
 post:
   summary: Cadastrar novo paciente
@@ -62,3 +88,5 @@ post:
       $ref: "../components/errors.yaml#/responses/400"
     "401":
       $ref: "../components/errors.yaml#/responses/401"
+    "500":
+      $ref: "../components/errors.yaml#/responses/500"

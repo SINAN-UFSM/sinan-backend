@@ -9,7 +9,7 @@ get:
     - Unidades
   parameters:
     - $ref: "../components/parameters.yaml#/PageParam"
-    - $ref: "../components/parameters.yaml#/PageSizeParam"
+    - $ref: "../components/parameters.yaml#/LimitParam"
     - $ref: "../components/parameters.yaml#/SearchParam"
   responses:
     # --- SUCCESS RESPONSE ---
@@ -38,7 +38,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../components/schemas.yaml#/UnitCreateRequest"
+          $ref: "../components/schemas.yaml#/UnitUpdateRequest"
   responses:
     # --- CREATED RESPONSE ---
     "201":

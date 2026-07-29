@@ -4,27 +4,46 @@ PathId:
   name: id
   in: path
   required: true
-  description: ID único do recurso.
+  description: ID único do recurso (Numérico).
   schema:
     type: integer
   example: 12
 
+PathUuid:
+  name: id
+  in: path
+  required: true
+  description: ID único do recurso (UUID).
+  schema:
+    type: string
+    format: uuid
+  example: "550e8400-e29b-41d4-a716-446655440000"
+
 # --- PAGINATION PARAMETERS ---
+
 PageParam:
   name: page
   in: query
   required: false
+  description: Número da página atual.
   schema:
     type: integer
+    minimum: 1
+    default: 1
   example: 1
 
-PageSizeParam:
-  name: page_size
+LimitParam:
+  name: limit
   in: query
   required: false
+  description: Quantidade máxima de itens por página.
   schema:
     type: integer
+    minimum: 1
+    maximum: 100
+    default: 10
   example: 10
+
 # --- DATE RANGE PARAMETERS ---
 StartDateParam:
   name: start_date
@@ -35,6 +54,7 @@ StartDateParam:
     type: string
     format: date
   example: "2024-01-01"
+
 EndDateParam:
   name: end_date
   in: query
@@ -44,6 +64,7 @@ EndDateParam:
     type: string
     format: date
   example: "2024-12-31"
+
 # --- SEARCH PARAMETERS ---
 SearchParam:
   name: search
@@ -53,28 +74,32 @@ SearchParam:
   schema:
     type: string
   example: "Joao"
+
 # --- ID FILTER PARAMETERS ---
 DiseaseIDParam:
   name: disease_id
   in: query
   required: false
-  description: Filtra por ID da doença.
+  description: Filtra por ID da doença (Numérico).
   schema:
     type: integer
   example: 5
+
 PatientIDParam:
   name: patient_id
   in: query
   required: false
-  description: Filtra por ID do paciente.
+  description: Filtra por ID do paciente (UUID).
   schema:
-    type: integer
-  example: 42
+    type: string
+    format: uuid
+  example: "550e8400-e29b-41d4-a716-446655440000"
+
 UnitIDParam:
   name: unitId
   in: query
   required: false
-  description: Filtra por ID da unidade de saúde.
+  description: Filtra por ID da unidade de saúde (Numérico).
   schema:
     type: integer
   example: 12
