@@ -2,30 +2,7 @@ import { Cpf } from '#modules/patients/value-objects/Cpf';
 import { SusCard } from '#modules/patients/value-objects/SusCard';
 import { BirthDate } from '#modules/patients/value-objects/BirthDate';
 import { Phone } from '#modules/patients/value-objects/Phone';
-
-export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER'
-}
-
-export enum RaceColor {
-    WHITE = 'WHITE',
-    BLACK = 'BLACK',
-    PARDO = 'PARDO',
-    ASIAN = 'ASIAN',
-    INDIGENOUS = 'INDIGENOUS'
-}
-
-export enum EducationLevel {
-    ILLITERATE = 'ILLITERATE',
-    INCOMPLETE_PRIMARY = 'INCOMPLETE_PRIMARY',
-    COMPLETE_PRIMARY = 'COMPLETE_PRIMARY',
-    INCOMPLETE_SECONDARY = 'INCOMPLETE_SECONDARY',
-    COMPLETE_SECONDARY = 'COMPLETE_SECONDARY',
-    HIGHER_EDUCATION = 'HIGHER_EDUCATION'
-}
-
+import { Gender, RaceColor, EducationLevel } from '#shared/domain/enums/PatientEnums'
 type PatientProps = {
     id?: string;
     name: string;

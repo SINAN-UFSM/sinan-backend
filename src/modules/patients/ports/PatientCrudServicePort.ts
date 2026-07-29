@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Gender, RaceColor, EducationLevel } from '#modules/patients/entities/Patient';
+import { Gender, RaceColor, EducationLevel } from '#shared/domain/enums/PatientEnums';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
 export const createPatientSchema = z.object({
@@ -7,10 +7,7 @@ export const createPatientSchema = z.object({
     cpf: z.string().min(11, 'CPF must be at least 11 digits long').max(20, 'Invalid CPF format'),
     susCard: z.string().min(15, 'SUS Card must be at least 15 digits long').max(30, 'Invalid SUS Card format'),
 
-    birthDate: z.coerce.date({
-        error: "Birth date is required",
-        message: "Invalid birth date"
-    }),
+    birthDate: z.coerce.date({ message: "Invalid birth date" }),
 
     birthCity: z.string().min(1, 'Birth city is required'),
     phone: z.string().min(10, 'Invalid phone number').max(20, 'Invalid phone format'),

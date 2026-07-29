@@ -1,0 +1,660 @@
+{
+    "disease": "botulism",
+    "tableName": "notifications_botulism",
+    "fields": [
+        {
+            "name": "dt_first_attendance",
+            "type": "date",
+            "required": false,
+            "description": "Data do 1º atendimento."
+        },
+        {
+            "name": "nu_attendances_until_suspicion",
+            "type": "number",
+            "required": false,
+            "description": "Número de atendimentos até suspeição."
+        },
+        {
+            "name": "dt_clinical_suspicion",
+            "type": "date",
+            "required": false,
+            "description": "Data da suspeição clínica."
+        },
+        {
+            "name": "st_hospitalization_occurred",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Ocorreu hospitalização? (1-Sim, 2-Não, 9-Ignorado)"
+        },
+        {
+            "name": "dt_hospitalization",
+            "type": "date",
+            "required": false,
+            "description": "Data da internação. Requerido se internou."
+        },
+        {
+            "name": "dt_hospital_discharge",
+            "type": "date",
+            "required": false,
+            "description": "Data da alta hospitalar."
+        },
+        {
+            "name": "st_symptoms_fever",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Febre"
+        },
+        {
+            "name": "st_symptoms_nausea",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Náusea"
+        },
+        {
+            "name": "st_symptoms_vomiting",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Vômito"
+        },
+        {
+            "name": "st_symptoms_diarrhea",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Diarreia"
+        },
+        {
+            "name": "st_symptoms_constipation",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Constipação"
+        },
+        {
+            "name": "st_symptoms_headache",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Cefaleia"
+        },
+        {
+            "name": "st_symptoms_dizziness",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Tontura"
+        },
+        {
+            "name": "st_symptoms_blurred_vision",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Visão turva"
+        },
+        {
+            "name": "st_symptoms_diplopia",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Diplopia"
+        },
+        {
+            "name": "st_symptoms_dysarthria",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Disartria"
+        },
+        {
+            "name": "st_symptoms_dysphonia",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Disfonia"
+        },
+        {
+            "name": "st_symptoms_dysphagia",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Disfagia"
+        },
+        {
+            "name": "st_symptoms_dry_mouth",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Boca seca"
+        },
+        {
+            "name": "st_symptoms_wound",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Ferimento"
+        },
+        {
+            "name": "st_symptoms_neck_flaccidity",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Flacidez de pescoço"
+        },
+        {
+            "name": "st_symptoms_dyspnea",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Dispneia"
+        },
+        {
+            "name": "st_symptoms_respiratory_failure",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Insuficiência respiratória"
+        },
+        {
+            "name": "st_symptoms_heart_failure",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Insuficiência cardíaca"
+        },
+        {
+            "name": "st_symptoms_coma",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Coma"
+        },
+        {
+            "name": "st_symptoms_paresthesia",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Parestesia"
+        },
+        {
+            "name": "ds_symptoms_paresthesia_where",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Se parestesia = Sim, descrever onde."
+        },
+        {
+            "name": "st_symptoms_other",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Outros sintomas."
+        },
+        {
+            "name": "st_exam_ptosis",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Ptose palpebral"
+        },
+        {
+            "name": "st_exam_ophthalmoparesis",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Oftalmoparesia / Oftalmoplegia"
+        },
+        {
+            "name": "st_exam_mydriasis",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Midríase"
+        },
+        {
+            "name": "st_exam_facial_paralysis",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Paralisia facial"
+        },
+        {
+            "name": "st_exam_bulbar_musculature",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Musculatura bulbar comprometida"
+        },
+        {
+            "name": "st_exam_upper_limb_weakness",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fraqueza em MMSS"
+        },
+        {
+            "name": "st_exam_lower_limb_weakness",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fraqueza em MMII"
+        },
+        {
+            "name": "st_exam_descending_weakness",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fraqueza descendente"
+        },
+        {
+            "name": "st_exam_symmetric_weakness",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fraqueza simétrica"
+        },
+        {
+            "name": "st_exam_altered_sensitivity",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Sensibilidade alterada"
+        },
+        {
+            "name": "st_neurological_reflexes",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Status geral dos reflexos"
+        },
+        {
+            "name": "transmission_source_food",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Suspeita de transmissão alimentar?"
+        },
+        {
+            "name": "ds_transmission_source_food",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Descrição do alimento suspeito"
+        },
+        {
+            "name": "tp_exposure_food",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Única, Múltipla, etc."
+        },
+        {
+            "name": "st_food_industrial",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento industrializado?"
+        },
+        {
+            "name": "st_food_homemade",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento caseiro?"
+        },
+        {
+            "name": "ds_food_industrial_info",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Marca, Lote, Validade"
+        },
+        {
+            "name": "st_location_domicile",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Consumido em domicílio?"
+        },
+        {
+            "name": "st_location_daycare",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Consumido em creche?"
+        },
+        {
+            "name": "st_location_work",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Consumido no trabalho?"
+        },
+        {
+            "name": "st_location_restaurant",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Consumido em restaurante?"
+        },
+        {
+            "name": "st_location_party",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Consumido em festa?"
+        },
+        {
+            "name": "st_location_other",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Outro local"
+        },
+        {
+            "name": "nu_people_consumed_food",
+            "type": "number",
+            "required": false,
+            "description": "Nº de pessoas expostas"
+        },
+        {
+            "name": "st_treatment_ventilatory_support",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Recebeu suporte ventilatório?"
+        },
+        {
+            "name": "st_treatment_antibiotic_therapy",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Uso de antibióticos?"
+        },
+        {
+            "name": "st_treatment_antibotulinum_serum",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Uso de soro antibotulínico?"
+        },
+        {
+            "name": "dt_antibotulinum_serum",
+            "type": "date",
+            "required": false,
+            "description": "Data de administração do soro"
+        },
+        {
+            "name": "tp_cerebrospinal_fluid",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Líquor: Realizado/Não"
+        },
+        {
+            "name": "dt_cerebrospinal_fluid_collection",
+            "type": "date",
+            "required": false,
+            "description": "Líquor: Data"
+        },
+        {
+            "name": "nu_cerebrospinal_fluid_cells",
+            "type": "number",
+            "required": false,
+            "description": "Líquor: Células"
+        },
+        {
+            "name": "nu_cerebrospinal_fluid_protein",
+            "type": "number",
+            "required": false,
+            "description": "Líquor: Proteínas"
+        },
+        {
+            "name": "st_electroneuromyography",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Eletroneuromiografia: Status"
+        },
+        {
+            "name": "dt_electroneuromyography_date",
+            "type": "date",
+            "required": false,
+            "description": "Eletroneuromiografia: Data"
+        },
+        {
+            "name": "tp_emg_sensitive_neuroconduction",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "EMG: Sensitiva"
+        },
+        {
+            "name": "tp_emg_motor_neuroconduction",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "EMG: Motora"
+        },
+        {
+            "name": "tp_emg_repetitive_stimulation",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "EMG: Estimulação repetitiva"
+        },
+        {
+            "name": "st_botuli_serum_collected",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Soro: Coletado?"
+        },
+        {
+            "name": "dt_botuli_serum_collection",
+            "type": "date",
+            "required": false,
+            "description": "Soro: Data"
+        },
+        {
+            "name": "st_botuli_serum_result",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Soro: Resultado"
+        },
+        {
+            "name": "tp_botuli_serum_toxin",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Soro: Tipo toxina"
+        },
+        {
+            "name": "st_botuli_feces_collected",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fezes: Coletado?"
+        },
+        {
+            "name": "dt_botuli_feces_collection",
+            "type": "date",
+            "required": false,
+            "description": "Fezes: Data"
+        },
+        {
+            "name": "st_botuli_feces_result",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Fezes: Resultado"
+        },
+        {
+            "name": "tp_botuli_feces_toxin",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Fezes: Tipo toxina"
+        },
+        {
+            "name": "ds_botuli_food1_info",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Alimento 1: Descrição"
+        },
+        {
+            "name": "st_botuli_food1_collected",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento 1: Coletado?"
+        },
+        {
+            "name": "dt_botuli_food1_collection",
+            "type": "date",
+            "required": false,
+            "description": "Alimento 1: Data"
+        },
+        {
+            "name": "st_botuli_food1_result",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento 1: Resultado"
+        },
+        {
+            "name": "tp_botuli_food1_toxin",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Alimento 1: Tipo toxina"
+        },
+        {
+            "name": "ds_botuli_food2_info",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Alimento 2: Descrição"
+        },
+        {
+            "name": "st_botuli_food2_collected",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento 2: Coletado?"
+        },
+        {
+            "name": "dt_botuli_food2_collection",
+            "type": "date",
+            "required": false,
+            "description": "Alimento 2: Data"
+        },
+        {
+            "name": "st_botuli_food2_result",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Alimento 2: Resultado"
+        },
+        {
+            "name": "tp_botuli_food2_toxin",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Alimento 2: Tipo toxina"
+        },
+        {
+            "name": "ds_botuli_other_info",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Outros: Descrição"
+        },
+        {
+            "name": "st_botuli_other_collected",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Outros: Coletado?"
+        },
+        {
+            "name": "dt_botuli_other_collection",
+            "type": "date",
+            "required": false,
+            "description": "Outros: Data"
+        },
+        {
+            "name": "st_botuli_other_result",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Outros: Resultado"
+        },
+        {
+            "name": "tp_botuli_other_toxin",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Outros: Tipo toxina"
+        },
+        {
+            "name": "tp_final_classification",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Confirmado / Descartado"
+        },
+        {
+            "name": "tp_confirmation_criteria",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Laboratorial / Clínico-Epidemiológico"
+        },
+        {
+            "name": "tp_botulism",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Alimentar, Intestinal, Ferimento"
+        },
+        {
+            "name": "tp_case_evolution",
+            "type": "string",
+            "maxLength": 2,
+            "required": false,
+            "description": "Cura, Óbito por agravo, Óbito outras causas"
+        },
+        {
+            "name": "ds_cause",
+            "type": "string",
+            "maxLength": 255,
+            "required": false,
+            "description": "Causa final descritiva"
+        },
+        {
+            "name": "st_work_related_disease",
+            "type": "string",
+            "maxLength": 1,
+            "required": false,
+            "description": "Relacionado ao trabalho?"
+        },
+        {
+            "name": "dt_death",
+            "type": "date",
+            "required": false,
+            "description": "Data do óbito (se houver)"
+        },
+        {
+            "name": "dt_closing",
+            "type": "date",
+            "required": false,
+            "description": "Data de encerramento do caso"
+        }
+    ]
+}

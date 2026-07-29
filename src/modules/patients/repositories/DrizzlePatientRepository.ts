@@ -1,6 +1,6 @@
 import type { PatientRepositoryPort } from "#modules/patients/ports/PatientRepositoryPort";
 import { Patient } from "#modules/patients/entities/Patient";
-import type { Gender, EducationLevel, RaceColor } from "#modules/patients/entities/Patient";
+import type { Gender, EducationLevel, RaceColor } from "#shared/domain/enums/PatientEnums";
 import { Phone } from "#modules/patients/value-objects/Phone";
 import { BirthDate } from "#modules/patients/value-objects/BirthDate";
 import { SusCard } from "#modules/patients/value-objects/SusCard";

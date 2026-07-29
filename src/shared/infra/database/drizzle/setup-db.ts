@@ -27,7 +27,7 @@ async function setupDatabase() {
             id: 1,
             name: 'Default Unit',
             city: 'Default City',
-            state: 'ST',
+            state: 'SP',
             isActive: true,
         }).onConflictDoNothing({ target: unitsTable.id });
 

@@ -76,6 +76,31 @@ O projeto implementa uma arquitetura que preserva dados históricos:
 - **Notification** - Notificações gerais (status, datas, observações)
 - **NotificationAids**, **NotificationBotulism**, **NotificationEpizootia**, etc. - Notificações específicas por tipo de agravo
 
+## Geração Automática de Schemas por Agravo
+O SINAN possui dezenas de agravos de notificação compulsória, cada um com centenas de campos específicos. Para evitar código repetitivo e garantir consistência, o projeto conta com um gerador automatizado de schemas baseado em especificações JSON.
+
+O script lê um arquivo JSON contendo a estrutura dos campos da doença, gera o código Drizzle ORM correspondente, cria os schemas de validação com Zod (drizzle-zod) e exporta os tipos e DTOs necessários.
+
+1. Estruture o arquivo JSON
+    ```json
+        {
+            "disease": "nome_da_doenca",
+            "tableName": "notifications_nome_da_doenca",
+            "fields": [
+                {
+                    "name": "nome_do_campo",
+                    "type": "string | number | date",
+                    "maxLength": 255, 
+                    "required": false,
+                    "description": "Descrição do campo (opcional)"
+                }
+            ]
+        }
+    ```
+2. Execute o Script
+    ```sh
+    npm generate:disease ./caminho/para/meu-agravo.json ./src/caminho/de/saida
+    ```
 ## Contribuição
 
 Para contribuir com melhorias, protocole um Pull Request descrevendo bem as alterações propostas.

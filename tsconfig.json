@@ -13,15 +13,21 @@
         "outDir": "./dist",
         "paths": {
             "#*": [
-                "./src/*.ts",
-            ],
+                "./src/*.ts"
+            ]
         },
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noEmitOnError": true,
-        "verbatimModuleSyntax": true,
+        "verbatimModuleSyntax": true
     },
     "include": [
-        "src"
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "drizzle.config.ts",
+        "scripts"
     ]
 }
