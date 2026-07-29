@@ -38,7 +38,7 @@ UserResponse:
         unitId:
           type: integer
           description: ID da unidade de saúde associada ao usuário.
-          example: 12
+          example: 1
 
 UserCreateRequest:
   allOf:
@@ -68,7 +68,7 @@ UserCreateRequest:
         unitId:
           type: integer
           description: ID da unidade de saúde associada ao usuário.
-          example: 12
+          example: 1
 
 UserUpdateRequest:
   type: object
@@ -99,7 +99,7 @@ UserUpdateRequest:
     unitId:
       type: integer
       description: ID da unidade (requer privilégios de admin).
-      example: 12
+      example: 1
 
 # --- PATIENT SCHEMA ---
 PatientBase:
@@ -120,19 +120,19 @@ PatientBase:
       type: string
       minLength: 3
       description: Nome completo do paciente.
-      example: "João da Silva"
+      example: "João Marcos da Silva"
     cpf:
       type: string
       minLength: 11
       maxLength: 20
       description: CPF do paciente (apenas números ou formatado).
-      example: "12345678900"
+      example: "52998224725"
     susCard:
       type: string
       minLength: 15
       maxLength: 30
       description: Número do cartão SUS do paciente.
-      example: "700000000000000"
+      example: "712345678901236"
     birthDate:
       type: string
       format: date
@@ -148,7 +148,7 @@ PatientBase:
       minLength: 10
       maxLength: 20
       description: Número de telefone do paciente.
-      example: "+5511912345678"
+      example: "55999887766"
     gender:
       type: string
       description: Gênero do paciente (mapeado pelo Enum Gender).
@@ -156,11 +156,11 @@ PatientBase:
     educationLevel:
       type: string
       description: Nível de escolaridade do paciente (mapeado pelo Enum EducationLevel).
-      example: "SUPERIOR_COMPLETO"
+      example: "COMPLETE_HIGHER_EDUCATION"
     raceColor:
       type: string
       description: Raça/cor autodeclarada do paciente (mapeado pelo Enum RaceColor).
-      example: "BRANCA"
+      example: "MIXED"
     currentAddress:
       type: string
       minLength: 5
@@ -376,7 +376,7 @@ NotificationBase:
     unitId:
       type: integer
       description: ID da unidade de saúde.
-      example: 12
+      example: 1
     status:
       type: string
       description: Status atual da notificação.
@@ -388,7 +388,7 @@ NotificationBase:
       description: Observações adicionais sobre a notificação.
       example: "Paciente internado."
 
-# --- SCHEMAS DE REQUISIÇÃO (CREATE E UPDATE) ---
+# --- NOTIFICATION REQUEST SCHEMAS ---
 CreateNotificationRequest:
   description: Requisição para criar uma nova notificação.
   oneOf:
@@ -490,26 +490,26 @@ PaginatedNotificationList:
 # --- BOTULISM NOTIFICATION SCHEMAS ---
 BotulismSpecificFields:
   type: object
-  description: Campos específicos da ficha de Botulismo.
+  description: Campos específicos da ficha de Botulismo (em camelCase).
   additionalProperties: true
   properties:
-    dt_first_attendance:
+    dtFirstAttendance:
       type: string
       format: date
       description: Data do 1º atendimento.
-    nu_attendances_until_suspicion:
+    nuAttendancesUntilSuspicion:
       type: integer
       description: Número de atendimentos até suspeição.
-    dt_clinical_suspicion:
+    dtClinicalSuspicion:
       type: string
       format: date
       description: Data da suspeição clínica.
-    st_hospitalization_occurred:
+    stHospitalizationOccurred:
       type: string
       maxLength: 1
       description: Ocorreu hospitalização? (1-Sim, 2-Não, 9-Ignorado)
     # ... (A propriedade additionalProperties: true garante que o Swagger aceite
-    # todos os 69 campos do seu JSON dinamicamente sem poluir a documentação inteira)
+    # todos os outros campos do seu JSON dinamicamente sem poluir a documentação inteira)
 
 BotulismCreateRequest:
   allOf:
