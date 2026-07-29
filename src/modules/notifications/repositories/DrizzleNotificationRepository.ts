@@ -47,7 +47,9 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
                     .returning() as unknown as Promise<Record<string, unknown>[]>);
 
                 if (insertedSpecific) {
-                    const { notificationId, notification_id, ...cleanSpecific } = insertedSpecific;
+                    const cleanSpecific = { ...insertedSpecific };
+                    delete cleanSpecific.notificationId;
+                    delete cleanSpecific.notification_id;
                     specificFieldsDb = cleanSpecific as T;
                 }
             }
@@ -82,7 +84,9 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
                     .returning() as unknown as Promise<Record<string, unknown>[]>);
 
                 if (updatedSpecific) {
-                    const { notificationId, notification_id, ...cleanSpecific } = updatedSpecific;
+                    const cleanSpecific = { ...updatedSpecific };
+                    delete cleanSpecific.notificationId;
+                    delete cleanSpecific.notification_id;
                     specificFieldsDb = cleanSpecific as T;
                 }
             }
@@ -129,7 +133,9 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
                 .limit(1) as unknown as Promise<Record<string, unknown>[]>);
 
             if (diseaseRecord) {
-                const { notificationId, notification_id, ...cleanSpecific } = diseaseRecord;
+                const cleanSpecific = { ...diseaseRecord };
+                delete cleanSpecific.notificationId;
+                delete cleanSpecific.notification_id;
                 specificFields = cleanSpecific as T;
             }
         }
