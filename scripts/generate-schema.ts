@@ -40,25 +40,30 @@ function generateDrizzleSchemaCode(spec: DiseaseSpec): string {
 
     const columnDefinitions = spec.fields.map(field => {
         const propName = snakeToCamel(field.name);
-        let colDef = '';
+        let colDef: string;
 
         switch (field.type) {
-            case 'string':
+            case 'string': {
                 usedImports.add('varchar');
                 const length = field.maxLength || 255;
                 colDef = `varchar('${field.name}', { length: ${length} })`;
                 break;
-            case 'number':
+            }
+            case 'number': {
                 usedImports.add('integer');
                 colDef = `integer('${field.name}')`;
                 break;
-            case 'date':
+            }
+            case 'date': {
                 usedImports.add('date');
                 colDef = `date('${field.name}')`;
                 break;
-            default:
+            }
+            default: {
                 usedImports.add('text');
                 colDef = `text('${field.name}')`;
+                break;
+            }
         }
 
         if (field.required) {
