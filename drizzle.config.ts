@@ -27,7 +27,10 @@ if (!POSTGRES_PORT || Number.isNaN(port) || !Number.isInteger(port) || port <= 0
 export default defineConfig({
     dialect: 'postgresql',
 
-    schema: './src/shared/infra/database/drizzle/schema.ts',
+    schema: [
+        './src/shared/infra/database/drizzle/schema.ts',
+        './src/shared/infra/database/drizzle/diseases/*.ts',
+    ],
 
     out: './drizzle',
 

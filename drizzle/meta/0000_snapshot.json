@@ -1,9 +1,345 @@
 {
-  "id": "622f9d3a-6dd3-4de2-8314-c1c514b73a71",
+  "id": "d4612856-efb9-454b-a2ee-20547b7820c4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.notifications": {
+      "name": "notifications",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "patient_id": {
+          "name": "patient_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit_id": {
+          "name": "unit_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_name": {
+          "name": "patient_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_cpf": {
+          "name": "patient_cpf",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_sus_card": {
+          "name": "patient_sus_card",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_birth_date": {
+          "name": "patient_birth_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_birth_city": {
+          "name": "patient_birth_city",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_gender": {
+          "name": "patient_gender",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_education_level": {
+          "name": "patient_education_level",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_race_color": {
+          "name": "patient_race_color",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_current_address": {
+          "name": "patient_current_address",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notification_type_slug": {
+          "name": "notification_type_slug",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "dt_notification": {
+          "name": "dt_notification",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "occurrence_date": {
+          "name": "occurrence_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "notification_patient_id_index": {
+          "name": "notification_patient_id_index",
+          "columns": [
+            {
+              "expression": "patient_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "notification_unit_id_index": {
+          "name": "notification_unit_id_index",
+          "columns": [
+            {
+              "expression": "unit_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "notifications_patient_id_patients_id_fk": {
+          "name": "notifications_patient_id_patients_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "patients",
+          "columnsFrom": [
+            "patient_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "notifications_unit_id_units_id_fk": {
+          "name": "notifications_unit_id_units_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "units",
+          "columnsFrom": [
+            "unit_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.patients": {
+      "name": "patients",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cpf": {
+          "name": "cpf",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sus_card": {
+          "name": "sus_card",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "birth_date": {
+          "name": "birth_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "birth_city": {
+          "name": "birth_city",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "education_level": {
+          "name": "education_level",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "race_color": {
+          "name": "race_color",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_address": {
+          "name": "current_address",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "patient_cpf_index": {
+          "name": "patient_cpf_index",
+          "columns": [
+            {
+              "expression": "cpf",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "patient_sus_card_index": {
+          "name": "patient_sus_card_index",
+          "columns": [
+            {
+              "expression": "sus_card",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "patients_cpf_unique": {
+          "name": "patients_cpf_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "cpf"
+          ]
+        },
+        "patients_sus_card_unique": {
+          "name": "patients_sus_card_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "sus_card"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.refresh_tokens": {
       "name": "refresh_tokens",
       "schema": "",
@@ -289,6 +625,631 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.notifications_botulism": {
+      "name": "notifications_botulism",
+      "schema": "",
+      "columns": {
+        "notification_id": {
+          "name": "notification_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "dt_first_attendance": {
+          "name": "dt_first_attendance",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nu_attendances_until_suspicion": {
+          "name": "nu_attendances_until_suspicion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_clinical_suspicion": {
+          "name": "dt_clinical_suspicion",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_hospitalization_occurred": {
+          "name": "st_hospitalization_occurred",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_hospitalization": {
+          "name": "dt_hospitalization",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_hospital_discharge": {
+          "name": "dt_hospital_discharge",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_fever": {
+          "name": "st_symptoms_fever",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_nausea": {
+          "name": "st_symptoms_nausea",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_vomiting": {
+          "name": "st_symptoms_vomiting",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_diarrhea": {
+          "name": "st_symptoms_diarrhea",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_constipation": {
+          "name": "st_symptoms_constipation",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_headache": {
+          "name": "st_symptoms_headache",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dizziness": {
+          "name": "st_symptoms_dizziness",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_blurred_vision": {
+          "name": "st_symptoms_blurred_vision",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_diplopia": {
+          "name": "st_symptoms_diplopia",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dysarthria": {
+          "name": "st_symptoms_dysarthria",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dysphonia": {
+          "name": "st_symptoms_dysphonia",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dysphagia": {
+          "name": "st_symptoms_dysphagia",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dry_mouth": {
+          "name": "st_symptoms_dry_mouth",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_wound": {
+          "name": "st_symptoms_wound",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_neck_flaccidity": {
+          "name": "st_symptoms_neck_flaccidity",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_dyspnea": {
+          "name": "st_symptoms_dyspnea",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_respiratory_failure": {
+          "name": "st_symptoms_respiratory_failure",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_heart_failure": {
+          "name": "st_symptoms_heart_failure",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_coma": {
+          "name": "st_symptoms_coma",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_paresthesia": {
+          "name": "st_symptoms_paresthesia",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_symptoms_paresthesia_where": {
+          "name": "ds_symptoms_paresthesia_where",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_symptoms_other": {
+          "name": "st_symptoms_other",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_ptosis": {
+          "name": "st_exam_ptosis",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_ophthalmoparesis": {
+          "name": "st_exam_ophthalmoparesis",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_mydriasis": {
+          "name": "st_exam_mydriasis",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_facial_paralysis": {
+          "name": "st_exam_facial_paralysis",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_bulbar_musculature": {
+          "name": "st_exam_bulbar_musculature",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_upper_limb_weakness": {
+          "name": "st_exam_upper_limb_weakness",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_lower_limb_weakness": {
+          "name": "st_exam_lower_limb_weakness",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_descending_weakness": {
+          "name": "st_exam_descending_weakness",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_symmetric_weakness": {
+          "name": "st_exam_symmetric_weakness",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_exam_altered_sensitivity": {
+          "name": "st_exam_altered_sensitivity",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_neurological_reflexes": {
+          "name": "st_neurological_reflexes",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transmission_source_food": {
+          "name": "transmission_source_food",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_transmission_source_food": {
+          "name": "ds_transmission_source_food",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_exposure_food": {
+          "name": "tp_exposure_food",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_food_industrial": {
+          "name": "st_food_industrial",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_food_homemade": {
+          "name": "st_food_homemade",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_food_industrial_info": {
+          "name": "ds_food_industrial_info",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_domicile": {
+          "name": "st_location_domicile",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_daycare": {
+          "name": "st_location_daycare",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_work": {
+          "name": "st_location_work",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_restaurant": {
+          "name": "st_location_restaurant",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_party": {
+          "name": "st_location_party",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_location_other": {
+          "name": "st_location_other",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nu_people_consumed_food": {
+          "name": "nu_people_consumed_food",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_treatment_ventilatory_support": {
+          "name": "st_treatment_ventilatory_support",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_treatment_antibiotic_therapy": {
+          "name": "st_treatment_antibiotic_therapy",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_treatment_antibotulinum_serum": {
+          "name": "st_treatment_antibotulinum_serum",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_antibotulinum_serum": {
+          "name": "dt_antibotulinum_serum",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_cerebrospinal_fluid": {
+          "name": "tp_cerebrospinal_fluid",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_cerebrospinal_fluid_collection": {
+          "name": "dt_cerebrospinal_fluid_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nu_cerebrospinal_fluid_cells": {
+          "name": "nu_cerebrospinal_fluid_cells",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nu_cerebrospinal_fluid_protein": {
+          "name": "nu_cerebrospinal_fluid_protein",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_electroneuromyography": {
+          "name": "st_electroneuromyography",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_electroneuromyography_date": {
+          "name": "dt_electroneuromyography_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_emg_sensitive_neuroconduction": {
+          "name": "tp_emg_sensitive_neuroconduction",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_emg_motor_neuroconduction": {
+          "name": "tp_emg_motor_neuroconduction",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_emg_repetitive_stimulation": {
+          "name": "tp_emg_repetitive_stimulation",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_serum_collected": {
+          "name": "st_botuli_serum_collected",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_botuli_serum_collection": {
+          "name": "dt_botuli_serum_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_serum_result": {
+          "name": "st_botuli_serum_result",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botuli_serum_toxin": {
+          "name": "tp_botuli_serum_toxin",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_feces_collected": {
+          "name": "st_botuli_feces_collected",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_botuli_feces_collection": {
+          "name": "dt_botuli_feces_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_feces_result": {
+          "name": "st_botuli_feces_result",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botuli_feces_toxin": {
+          "name": "tp_botuli_feces_toxin",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_botuli_food1_info": {
+          "name": "ds_botuli_food1_info",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_food1_collected": {
+          "name": "st_botuli_food1_collected",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_botuli_food1_collection": {
+          "name": "dt_botuli_food1_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_food1_result": {
+          "name": "st_botuli_food1_result",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botuli_food1_toxin": {
+          "name": "tp_botuli_food1_toxin",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_botuli_food2_info": {
+          "name": "ds_botuli_food2_info",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_food2_collected": {
+          "name": "st_botuli_food2_collected",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_botuli_food2_collection": {
+          "name": "dt_botuli_food2_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_food2_result": {
+          "name": "st_botuli_food2_result",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botuli_food2_toxin": {
+          "name": "tp_botuli_food2_toxin",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_botuli_other_info": {
+          "name": "ds_botuli_other_info",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_other_collected": {
+          "name": "st_botuli_other_collected",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_botuli_other_collection": {
+          "name": "dt_botuli_other_collection",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_botuli_other_result": {
+          "name": "st_botuli_other_result",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botuli_other_toxin": {
+          "name": "tp_botuli_other_toxin",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_final_classification": {
+          "name": "tp_final_classification",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_confirmation_criteria": {
+          "name": "tp_confirmation_criteria",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_botulism": {
+          "name": "tp_botulism",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tp_case_evolution": {
+          "name": "tp_case_evolution",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ds_cause": {
+          "name": "ds_cause",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "st_work_related_disease": {
+          "name": "st_work_related_disease",
+          "type": "varchar(1)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_death": {
+          "name": "dt_death",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dt_closing": {
+          "name": "dt_closing",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "notifications_botulism_notification_id_idx": {
+          "name": "notifications_botulism_notification_id_idx",
+          "columns": [
+            {
+              "expression": "notification_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "notifications_botulism_notification_id_notifications_id_fk": {
+          "name": "notifications_botulism_notification_id_notifications_id_fk",
+          "tableFrom": "notifications_botulism",
+          "tableTo": "notifications",
+          "columnsFrom": [
+            "notification_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

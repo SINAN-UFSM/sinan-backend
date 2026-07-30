@@ -13,6 +13,7 @@ import { makeUserCrudController } from '#modules/users/factories/makeUserCrudCon
 import { makeUserAuthController } from '#modules/users/factories/makeUserAuthController';
 import { makeUnitCrudController } from '#modules/units/factories/makeUnitCrudController';
 import { makePatientCrudController } from '#modules/patients/factories/makePatientCrudController';
+import { makeNotificationCrudController } from '#modules/notifications/factories/makeNotificationCrudController';
 
 import { verifyBearerToken } from '#shared/infra/http/middlewares/verifyBearerToken';
 
@@ -44,6 +45,13 @@ router.post('/api/v1/patients', verifyBearerToken, patientController.createPatie
 router.get('/api/v1/patients/:id', verifyBearerToken, patientController.getPatient.bind(patientController));
 router.patch('/api/v1/patients/:id', verifyBearerToken, patientController.updatePatient.bind(patientController));
 router.delete('/api/v1/patients/:id', verifyBearerToken, patientController.deletePatient.bind(patientController));
+
+const notificationController = makeNotificationCrudController();
+router.get('/api/v1/notifications', verifyBearerToken, notificationController.getNotifications.bind(notificationController));
+router.post('/api/v1/notifications', verifyBearerToken, notificationController.createNotification.bind(notificationController));
+router.get('/api/v1/notifications/:id', verifyBearerToken, notificationController.getNotification.bind(notificationController));
+router.patch('/api/v1/notifications/:id', verifyBearerToken, notificationController.updateNotification.bind(notificationController));
+router.delete('/api/v1/notifications/:id', verifyBearerToken, notificationController.deleteNotification.bind(notificationController));
 
 router.get('/health', (_: Request, res: Response) => {
     return res.status(200).json(
