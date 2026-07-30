@@ -246,7 +246,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
             patientBirthCity: dbNotification.patientBirthCity,
             patientCurrentAddress: dbNotification.patientCurrentAddress,
 
-            unitId: String(dbNotification.unitId),
+            unitId: dbNotification.unitId,
             notificationTypeSlug: dbNotification.notificationTypeSlug,
             status: dbNotification.status,
             notificationDate: parseDateAsUtc(dbNotification.dtNotification),

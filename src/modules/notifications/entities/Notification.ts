@@ -15,7 +15,7 @@ type NotificationBaseProps = {
     patientSusCardNumber: SusCard;
     patientBirthCity: string;
     patientCurrentAddress: string;
-    unitId: string;
+    unitId: number;
     notificationTypeSlug: string;
     status: string;
     notificationDate: Date;
@@ -48,7 +48,7 @@ class Notification<TDiseaseDetails = Record<string, unknown>> {
     get patientSusCardNumber(): SusCard { return this.props.patientSusCardNumber; }
     get patientBirthCity(): string { return this.props.patientBirthCity; }
     get patientCurrentAddress(): string { return this.props.patientCurrentAddress; }
-    get unitId(): string { return this.props.unitId; }
+    get unitId(): number { return this.props.unitId; }
     get notificationTypeSlug(): string { return this.props.notificationTypeSlug; }
     get status(): string { return this.props.status; }
     get notificationDate(): Date { return this.props.notificationDate; }

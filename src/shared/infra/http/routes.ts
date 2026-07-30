@@ -81,6 +81,7 @@ router.get(docsPaths, (req: Request, res: Response, next: NextFunction) => {
     swaggerSetupMiddleware(req, res, next);
 });
 
+
 router.use('/docs/assets', Express.static(path.resolve(process.cwd(), 'docs', 'assets')));
 router.get('/api/v1/docs/architecture/architecture.md', (_: Request, res: Response) => {
     const mdPath = path.resolve(process.cwd(), 'docs', 'architecture', 'architecture.md');

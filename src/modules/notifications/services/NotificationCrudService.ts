@@ -46,7 +46,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
             patientBirthCity: patient.birthCity,
             patientCurrentAddress: patient.currentAddress,
 
-            unitId: dto.unitId ? String(dto.unitId) : '',
+            unitId: dto.unitId,
             notificationTypeSlug: dto.notificationTypeSlug,
             status: dto.status || 'ACTIVE',
             notificationDate: new Date(dto.dtNotification),
@@ -84,7 +84,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
             patientBirthCity: existingNotification.patientBirthCity,
             patientCurrentAddress: existingNotification.patientCurrentAddress,
 
-            unitId: dto.unitId ? String(dto.unitId) : existingNotification.unitId,
+            unitId: dto.unitId ?? existingNotification.unitId,
             notificationTypeSlug: existingNotification.notificationTypeSlug,
 
             status: dto.status || existingNotification.status,
@@ -158,7 +158,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
             status: notification.status,
             notes: notification.notes,
 
-            unitId: notification.unitId ? Number(notification.unitId) : undefined,
+            unitId: notification.unitId ? notification.unitId : undefined,
             specificFields: notification.specificFields as Record<string, unknown>,
         };
     }
