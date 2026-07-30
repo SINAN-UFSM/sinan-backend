@@ -25,9 +25,10 @@ class BirthDate {
             if (!isoRegex.test(input)) return null;
 
             const [year, month, day] = input.split('-').map(Number);
-            date = new Date(year, month - 1, day);
 
-            if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+            date = new Date(Date.UTC(year, month - 1, day));
+
+            if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
                 return null;
             }
         } else {
@@ -38,25 +39,26 @@ class BirthDate {
             return null;
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date();
+        const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
-        if (date > today) {
+        if (date > todayUtc) {
             return null;
         }
 
-        const minYear = today.getFullYear() - 120;
-        if (date.getFullYear() < minYear) {
+        const minYear = todayUtc.getUTCFullYear() - 120;
+        if (date.getUTCFullYear() < minYear) {
             return null;
         }
 
         return date;
     }
+
     get value(): Date {
         return this._value;
     }
 
-    public getFormatted_value(): string {
+    public getFormattedValue(): string {
         return this._value.toISOString().split('T')[0];
     }
 }

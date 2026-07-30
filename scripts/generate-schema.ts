@@ -7,6 +7,10 @@ interface FieldSpec {
     type: 'string' | 'number' | 'date';
     maxLength?: number;
     required?: boolean;
+    requiredWhen?: {
+        field: string;
+        value: string | number;
+    };
     description?: string;
 }
 
@@ -36,7 +40,7 @@ function generateDrizzleSchemaCode(spec: DiseaseSpec): string {
     const payloadSchemaName = `create${pascalTableName}PayloadSchema`;
     const payloadDtoTypeName = `Create${pascalTableName}PayloadDTO`;
 
-    const usedImports = new Set<string>(['pgTable', 'uuid', 'index']);
+    const usedImports = new Set<string>(['pgTable', 'uuid']);
 
     const columnDefinitions = spec.fields.map(field => {
         const propName = snakeToCamel(field.name);
@@ -75,6 +79,30 @@ function generateDrizzleSchemaCode(spec: DiseaseSpec): string {
 
     const pgCoreImports = Array.from(usedImports).join(', ');
 
+    const conditionalRules = spec.fields.filter(f => f.requiredWhen);
+
+    let payloadSchemaDef = `${insertSchemaName}.omit({ notificationId: true }).strict()`;
+
+    if (conditionalRules.length > 0) {
+        payloadSchemaDef += `.superRefine((data, ctx) => {`;
+        conditionalRules.forEach(field => {
+            const propName = snakeToCamel(field.name);
+            const reqWhen = field.requiredWhen!;
+            const targetPropName = snakeToCamel(reqWhen.field);
+            const targetValueStr = typeof reqWhen.value === 'string' ? `'${reqWhen.value}'` : reqWhen.value;
+
+            payloadSchemaDef += `
+    if (data.${targetPropName} === ${targetValueStr} && (!data.${propName} || data.${propName} === null)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Campo obrigatório quando ${reqWhen.field} for igual a ${reqWhen.value}.",
+            path: ['${propName}']
+        });
+    }`;
+        });
+        payloadSchemaDef += `\n})`;
+    }
+
     return `// ============================================================================
 // ATENÇÃO: Arquivo gerado automaticamente via script. Não edite manualmente.
 // ============================================================================
@@ -89,9 +117,7 @@ export const ${tableVarName} = pgTable('${spec.tableName}', {
         .primaryKey()
         .references(() => notificationsTable.id, { onDelete: 'cascade' }),
 ${columnDefinitions.join('\n')}
-}, (table) => [
-    index('${spec.tableName}_notification_id_idx').on(table.notificationId)
-]);
+});
 
 // ============================================================================
 // SCHEMAS ZOD (drizzle-zod)
@@ -102,7 +128,7 @@ export const ${selectSchemaName} = createSelectSchema(${tableVarName});
 /**
  * Schema para validação do payload HTTP da doença (omite notificationId pois é FK gerada no banco)
  */
-export const ${payloadSchemaName} = ${insertSchemaName}.omit({ notificationId: true });
+export const ${payloadSchemaName} = ${payloadSchemaDef};
 
 // ============================================================================
 // TYPES & DTOs

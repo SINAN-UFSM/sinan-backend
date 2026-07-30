@@ -10,8 +10,8 @@ export { uuidParamSchema };
 
 const specificFieldsSchemas: Record<string, z.ZodSchema> = {
     botulism: createNotificationsBotulismPayloadSchema,
-
 };
+
 const baseNotificationFields = {
     patientId: z.uuid('Patient ID must be a valid UUID'),
     dtNotification: z.string().min(1, 'Notification date cannot be empty'),
@@ -41,16 +41,16 @@ const baseUpdateSchema = z.object({
     specificFields: z.unknown().optional(),
 });
 
-export const createNotificationSchema = baseCreateSchema.superRefine((data, ctx) => {
+export const createNotificationSchema = baseCreateSchema.transform((data, ctx) => {
     const specificSchema = specificFieldsSchemas[data.notificationTypeSlug];
 
     if (!specificSchema) {
         ctx.addIssue({
             code: "custom",
-            message: "Tipo de notificação inválido ou não suportado",
+            message: "Notification type is invalid or not supported",
             path: ["notificationTypeSlug"]
         });
-        return;
+        return z.NEVER;
     }
 
     const result = specificSchema.safeParse(data.specificFields);
@@ -62,22 +62,27 @@ export const createNotificationSchema = baseCreateSchema.superRefine((data, ctx)
                 path: ["specificFields", ...issue.path]
             });
         });
+        return z.NEVER;
     }
+
+    return {
+        ...data,
+        specificFields: result.data as unknown,
+    };
 });
 
-
-export const updateNotificationSchema = baseUpdateSchema.superRefine((data, ctx) => {
+export const updateNotificationSchema = baseUpdateSchema.transform((data, ctx) => {
     if (!(data.notificationTypeSlug in specificFieldsSchemas)) {
         ctx.addIssue({
             code: "custom",
-            message: "Tipo de notificação inválido ou não suportado",
+            message: "Notification type is invalid or not supported",
             path: ["notificationTypeSlug"]
         });
-        return;
+        return z.NEVER;
     }
 
     if (data.specificFields === undefined) {
-        return;
+        return data;
     }
 
     const slug = data.notificationTypeSlug as keyof typeof specificFieldsSchemas;
@@ -94,13 +99,27 @@ export const updateNotificationSchema = baseUpdateSchema.superRefine((data, ctx)
                 path: ["specificFields", ...(issue.path || [])]
             });
         });
+        return z.NEVER;
     }
+
+    return {
+        ...data,
+        specificFields: result.data as unknown,
+    };
 });
+
 export const readNotificationsQuerySchema = z.object({
     patientId: z.uuid().optional(),
     notificationTypeSlug: z.string().optional(),
-    page: z.coerce.number().min(1).default(1),
-    limit: z.coerce.number().min(1).default(10),
+    page: z.coerce.number()
+        .int('Page must be an integer')
+        .min(1)
+        .default(1),
+    limit: z.coerce.number()
+        .int('Limit must be an integer')
+        .min(1)
+        .max(100, 'Limit cannot exceed 100 items per page')
+        .default(10),
 });
 
 type CreateNotificationRequestDTO = z.infer<typeof createNotificationSchema>;

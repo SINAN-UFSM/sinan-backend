@@ -7,14 +7,14 @@ export const createPatientSchema = z.object({
     cpf: z.string().min(11, 'CPF must be at least 11 digits long').max(20, 'Invalid CPF format'),
     susCard: z.string().min(15, 'SUS Card must be at least 15 digits long').max(30, 'Invalid SUS Card format'),
 
-    birthDate: z.coerce.date({ message: "Invalid birth date" }),
+    birthDate: z.coerce.date({ error: "Invalid birth date" }),
 
     birthCity: z.string().min(1, 'Birth city is required'),
     phone: z.string().min(10, 'Invalid phone number').max(20, 'Invalid phone format'),
 
-    gender: z.enum(Gender, { message: 'Invalid gender' }),
-    educationLevel: z.enum(EducationLevel, { message: 'Invalid education level' }),
-    raceColor: z.enum(RaceColor, { message: 'Invalid race/color' }),
+    gender: z.enum(Gender, { error: 'Invalid gender' }),
+    educationLevel: z.enum(EducationLevel, { error: 'Invalid education level' }),
+    raceColor: z.enum(RaceColor, { error: 'Invalid race/color' }),
 
     currentAddress: z.string().min(5, 'Current address is required'),
 });

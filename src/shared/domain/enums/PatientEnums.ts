@@ -8,7 +8,7 @@ enum Gender {
 enum RaceColor {
     WHITE = 'WHITE',           // Branca
     BLACK = 'BLACK',           // Preta
-    PARDO = 'MIXED',           // Parda
+    MIXED = 'MIXED',           // Parda
     ASIAN = 'ASIAN',           // Amarela
     INDIGENOUS = 'INDIGENOUS', // Indígena
     IGNORED = 'IGNORED'        // Ignorado (Muito comum em fichas do SINAN)

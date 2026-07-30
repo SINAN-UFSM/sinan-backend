@@ -99,7 +99,7 @@ O script lê um arquivo JSON contendo a estrutura dos campos da doença, gera o 
     ```
 2. Execute o Script
     ```sh
-    npm generate:disease ./caminho/para/meu-agravo.json ./src/caminho/de/saida
+    npm run generate:disease ./caminho/para/meu-agravo.json ./src/caminho/de/saida
     ```
 ## Contribuição
 

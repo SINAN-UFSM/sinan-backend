@@ -13,7 +13,7 @@ import { Cpf } from '#shared/domain/value-objects/Cpf';
 import { SusCard } from '#shared/domain/value-objects/SusCard';
 import { BirthDate } from '#shared/domain/value-objects/BirthDate';
 
-import { NotFoundError } from '#shared/errors/HttpErrors';
+import { BadRequestError, NotFoundError } from '#shared/errors/HttpErrors';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
 export class NotificationCrudService implements NotificationCrudServicePort {
@@ -61,8 +61,14 @@ export class NotificationCrudService implements NotificationCrudServicePort {
 
     async updateNotification(dto: UpdateNotificationRequestDTO): Promise<NotificationResponseDTO> {
         const existingNotification = await this.notificationRepository.findById(dto.id);
+
         if (!existingNotification) {
-            throw new NotFoundError(`Notification with ID ${dto.id} not found`);
+            throw new NotFoundError('Notification not found');
+        }
+        if (dto.notificationTypeSlug && dto.notificationTypeSlug !== existingNotification.notificationTypeSlug) {
+            throw new BadRequestError(
+                `Cannot update notification type from '${existingNotification.notificationTypeSlug}' to '${dto.notificationTypeSlug}'. Type migration is not allowed.`
+            );
         }
 
         const updatedNotificationEntity = Notification.create({

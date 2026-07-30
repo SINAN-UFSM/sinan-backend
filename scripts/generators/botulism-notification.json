@@ -31,6 +31,10 @@
             "name": "dt_hospitalization",
             "type": "date",
             "required": false,
+            "requiredWhen": {
+                "field": "st_hospitalization_occurred",
+                "value": "1"
+            },
             "description": "Data da internação. Requerido se internou."
         },
         {

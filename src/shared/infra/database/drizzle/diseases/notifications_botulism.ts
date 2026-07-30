@@ -2,7 +2,7 @@
 // ATENÇÃO: Arquivo gerado automaticamente via script. Não edite manualmente.
 // ============================================================================
 
-import { pgTable, uuid, index, date, integer, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, date, integer, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { notificationsTable } from '#shared/infra/database/drizzle/schema';
@@ -107,9 +107,7 @@ export const notificationsBotulismTable = pgTable('notifications_botulism', {
     stWorkRelatedDisease: varchar('st_work_related_disease', { length: 1 }),
     dtDeath: date('dt_death'),
     dtClosing: date('dt_closing'),
-}, (table) => [
-    index('notifications_botulism_notification_id_idx').on(table.notificationId)
-]);
+});
 
 // ============================================================================
 // SCHEMAS ZOD (drizzle-zod)
@@ -120,7 +118,15 @@ export const selectNotificationsBotulismSchema = createSelectSchema(notification
 /**
  * Schema para validação do payload HTTP da doença (omite notificationId pois é FK gerada no banco)
  */
-export const createNotificationsBotulismPayloadSchema = insertNotificationsBotulismSchema.omit({ notificationId: true });
+export const createNotificationsBotulismPayloadSchema = insertNotificationsBotulismSchema.omit({ notificationId: true }).strict().superRefine((data, ctx) => {
+    if (data.stHospitalizationOccurred === '1' && (!data.dtHospitalization || data.dtHospitalization === null)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Campo obrigatório quando st_hospitalization_occurred for igual a 1.",
+            path: ['dtHospitalization']
+        });
+    }
+});
 
 // ============================================================================
 // TYPES & DTOs
