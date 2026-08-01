@@ -84,14 +84,14 @@ services:
     networks:
       - sinan_net
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:v2
     container_name: sinan-certbot
+    restart: unless-stopped
     volumes:
       - certbot_etc:/etc/letsencrypt
       - certbot_web:/var/www/certbot
     depends_on:
       - nginx
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   sinan_pg_data:
