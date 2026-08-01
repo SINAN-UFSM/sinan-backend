@@ -66,23 +66,32 @@ services:
       timeout: 5s
       retries: 5
   nginx:
-    image: nginx:1.25-alpine
+    image: nginx:1.30.4-alpine
     container_name: sinan-nginx
     restart: always
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
-      - certbot_etc:/etc/letsencrypt
-      - certbot_web:/var/www/certbot
+      - certbot_etc:/etc/letsencrypt:ro
+      - certbot_web:/var/www/certbot:ro
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
       - NGINX_PORT=${NGINX_PORT}
       - NGINX_HOST=${NGINX_HOST}
     networks:
       - sinan_net
+  certbot:
+    image: certbot/certbot
+    container_name: sinan-certbot
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_web:/var/www/certbot
+    depends_on:
+      - nginx
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   sinan_pg_data:
