@@ -84,7 +84,7 @@ services:
     networks:
       - sinan_net
   certbot:
-    image: certbot/certbot:v2
+    image: certbot/certbot:v5.7.0
     container_name: sinan-certbot
     restart: unless-stopped
     volumes:
