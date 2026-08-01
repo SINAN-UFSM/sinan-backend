@@ -37,8 +37,8 @@ services:
       context: .
       target: runner 
     command: ["sh", "-c", "node dist/shared/infra/database/drizzle/setup-db.js && node dist/index.js"]
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       - NODE_ENV=${NODE_ENV}
 
@@ -65,8 +65,38 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  nginx:
+    image: nginx:1.30.4-alpine
+    container_name: sinan-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
+      - certbot_etc:/etc/letsencrypt:ro
+      - certbot_web:/var/www/certbot:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - NGINX_PORT=${NGINX_PORT}
+      - NGINX_HOST=${NGINX_HOST}
+    networks:
+      - sinan_net
+  certbot:
+    image: certbot/certbot:v2
+    container_name: sinan-certbot
+    restart: unless-stopped
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_web:/var/www/certbot
+    depends_on:
+      - nginx
+
 volumes:
   sinan_pg_data:
+  certbot_etc:
+  certbot_web:
 
 networks:
   sinan_net:
