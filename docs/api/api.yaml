@@ -24,8 +24,9 @@ servers:
     description: Escolha o ambiente da API SINAN
     variables:
       environment:
-        default: https://sinan.gov.br
+        default: https://sinan-ufsm.duckdns.org
         enum:
+          - https://sinan-ufsm.duckdns.org
           - https://sinan.gov.br
           - http://localhost:8000
         description: Ambientes disponíveis para integração
