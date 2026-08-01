@@ -54,6 +54,10 @@ O projeto utiliza variáveis de ambiente para configuração sensível. Crie um 
 
     # --- NODE CONFIG ---
     NODE_ENV=production
+
+    # --- NGINX CONFIG ---
+   NGINX_PORT=80
+   NGINX_HOST=localhost
     ```
 
 ### Executando
