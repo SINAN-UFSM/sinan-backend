@@ -16,7 +16,7 @@ jobs:
             username: ${{ secrets.VPS_USERNAME }}
             key: ${{ secrets.VPS_PRIVATE_KEY }}
             script: |
-              cd /sinan-project/sinan-backend
+              cd /home/ubuntu/sinan-project/sinan-backend
               
               git pull origin main
               docker compose up -d --build
