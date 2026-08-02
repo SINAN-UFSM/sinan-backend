@@ -122,6 +122,10 @@ router.get('/api/v1/docs/architecture', (_: Request, res: Response) => {
   `;
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:;"
+    );
     res.send(htmlContent);
 });
 export { router };
