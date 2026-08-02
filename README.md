@@ -78,7 +78,6 @@ O projeto implementa uma arquitetura que preserva dados históricos:
 - **User** - Usuários do sistema
 - **Patient** - Cadastro mestre de pacientes
 - **Notification** - Notificações gerais (status, datas, observações)
-- **NotificationAids**, **NotificationBotulism**, **NotificationEpizootia**, etc. - Notificações específicas por tipo de agravo
 
 ## Geração Automática de Schemas por Agravo
 O SINAN possui dezenas de agravos de notificação compulsória, cada um com centenas de campos específicos. Para evitar código repetitivo e garantir consistência, o projeto conta com um gerador automatizado de schemas baseado em especificações JSON.
