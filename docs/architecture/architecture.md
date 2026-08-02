@@ -40,28 +40,6 @@ src/
 ## Modelo C2(Container)
 Abaixo está o diagrama de Nível 2 (Containers) do sistema SINAN. O ambiente é composto pelo NGINX, que atua como proxy reverso e gerencia os certificados SSL; uma API em Node.js, responsável pela lógica de negócios; e o banco de dados relacional PostgreSQL. A administração do banco é facilitada pelo PgAdmin, enquanto o Certbot interage com a Autoridade Certificadora Let's Encrypt para a renovação automática dos certificados.
 
-```mermaid
-C4Container
-      title System Context diagram for SINAN
-      Person(user, "User", "Unit User")
-      Person(admin, "Admin", "System Administrator")
-
-      System_Boundary(c1, "SINAN System") {
-            Container(nginx, "NGINX", "Reverse Proxy & SSL Term.", "Handles HTTPS/HTTP and Certbot volumes")
-            Container(api, "API", "Node.js / Express", "Handles all business logic & migrations")
-            ContainerDb(db, "Database", "PostgreSQL 15", "Store users, patients, units and notifications")
-            Container(pgadmin, "PgAdmin", "Database Management", "Web-based SQL administration")
-            Container(certbot, "Certbot", "SSL automation", "Renews Let's Encrypt certificates")
-      }
-
-      System_Ext(letsencrypt, "Let's Encrypt", "External CA")
-
-      Rel(user, nginx, "Access", "https")
-      Rel(admin, nginx, "Access", "https")
-      Rel(admin, pgadmin, "Manages DB", "http/https")
-      Rel(nginx, api, "Proxies", "http")
-      Rel(api, db, "Reads/Write")
-      Rel(pgadmin, db, "Queries")
-      Rel(certbot, nginx, "Shares volumes", "Certificates")
-      Rel(certbot, letsencrypt, "Validates domain", "https")
-```
+<div style="text-align: center; margin: 20px 0;">
+    <img style="max-width: 100%; height: auto; display: inline-block;" src="/docs/assets/c2_model.png" alt="Modelo C2">
+</div>
