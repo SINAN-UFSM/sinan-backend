@@ -1,0 +1,111 @@
+@startuml
+' Configurações visuais para o diagrama
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam class {
+    BackgroundColor white
+    ArrowColor black
+    BorderColor black
+}
+
+' ================= TABELAS =================
+
+entity "units" as units {
+  * id : Serial <<PK>>
+  * public_id : uuid
+  --
+  name : varchar
+  city : varchar
+  state : varchar
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "users" as users {
+  * id : Serial <<PK>>
+  * public_id : uuid
+  --
+  name : varchar
+  email : varchar
+  hashed_password : varchar
+  unit_id : int <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "refresh_tokens" as refresh_tokens {
+  * id : Serial <<PK>>
+  * public_id : uuid
+  --
+  user_id : int <<FK>>
+  token_hash : varchar
+  expires_at : timestamp
+  revoked : boolean
+  created_at : timestamp
+}
+
+entity "patients" as patients {
+  * id : Serial <<PK>>
+  * public_id : uuid
+  --
+  name : varchar
+  cpf : varchar
+  sus_card : varchar
+  birth_date : date
+  birth_city : varchar
+  phone : varchar
+  gender : varchar
+  education_level : varchar
+  race_color : varchar
+  current_address : varchar
+  is_active : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "notifications" as notifications {
+  * id : Serial <<PK>>
+  * public_id : uuid
+  --
+  patient_id : int <<FK>>
+  unit_id : int <<FK>>
+  patient_name : varchar
+  patient_cpf : varchar
+  patient_birth_date : varchar
+  patient_gender : varchar
+  patient_race_color : varchar
+  patient_education_level : varchar
+  patient_sus_card_number : varchar
+  patient_birth_city : varchar
+  patient_current_address : varchar
+  notification_type_slug : varchar
+  status : varchar
+  notification_date : date
+  occurrence_date : date
+  notes : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "notification_disease" as notification_disease {
+  * notification_id : int <<PK, FK>>
+  -- DADOS DO PACIENTE (Snapshot) --
+  ' Deixamos visível pois é uma regra de negócio importante
+  patient_name : varchar
+  patient_cpf : varchar
+  -- REPRESENTAÇÃO ABSTRATA --
+  ' Esta tabela espelha estruturas como notification_botulism, notification_dengue, etc.
+  ' Os campos variam de acordo com a ficha específica do SINAN.
+  fields : demais_campos_do_agravo
+}
+
+' ================= RELACIONAMENTOS =================
+
+units ||--o{ users : "possui"
+users ||--o{ refresh_tokens : "possui"
+patients ||--o{ notifications : "tem"
+units ||--o{ notifications : "registra"
+notifications ||--o| notification_disease : "detalha"
+
+@enduml
