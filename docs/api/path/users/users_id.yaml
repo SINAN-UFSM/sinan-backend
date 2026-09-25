@@ -30,29 +30,13 @@ patch:
           schema:
             $ref: "../components/schemas.yaml#/UserResponse"
     "400":
-      description: Requisição inválida.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/400"
+      $ref: "../components/errors.yaml#/responses/400"
     "401":
-      description: Não autorizado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/401"
+      $ref: "../components/errors.yaml#/responses/401"
     "403":
-      description: Acesso negado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/403"
+      $ref: "../components/errors.yaml#/responses/403"
     "404":
-      description: Usuário não encontrado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/404"
+      $ref: "../components/errors.yaml#/responses/404"
 
 delete:
   summary: Deleta um usuário existente.
@@ -72,20 +56,8 @@ delete:
     "204":
       description: Usuário deletado com sucesso.
     "401":
-      description: Não autorizado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/401"
+      $ref: "../components/errors.yaml#/responses/401"
     "403":
-      description: Acesso negado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/403"
+      $ref: "../components/errors.yaml#/responses/403"
     "404":
-      description: Usuário não encontrado.
-      content:
-        application/json:
-          schema:
-            $ref: "../components/errors.yaml#/responses/404"
+      $ref: "../components/errors.yaml#/responses/404"

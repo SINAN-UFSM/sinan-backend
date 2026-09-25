@@ -4,7 +4,7 @@ import { BirthDate } from '#modules/patients/value-objects/BirthDate';
 import { Phone } from '#modules/patients/value-objects/Phone';
 import { Gender, RaceColor, EducationLevel } from '#shared/domain/enums/PatientEnums'
 type PatientProps = {
-    id?: string;
+    publicId?: string;
     name: string;
     cpf: Cpf;
     susCard: SusCard;
@@ -37,8 +37,8 @@ class Patient {
         return patient;
     }
 
-    public get id(): string | undefined {
-        return this.props.id;
+    public get publicId(): string | undefined {
+        return this.props.publicId;
     }
 
     public get name(): string {

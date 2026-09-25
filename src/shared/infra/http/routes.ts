@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs';
 
 import Express from 'express';
 import type { NextFunction, Request, Response } from 'express';
@@ -83,49 +82,5 @@ router.get(docsPaths, (req: Request, res: Response, next: NextFunction) => {
 
 
 router.use('/docs/assets', Express.static(path.resolve(process.cwd(), 'docs', 'assets')));
-router.get('/api/v1/docs/architecture/architecture.md', (_: Request, res: Response) => {
-    const mdPath = path.resolve(process.cwd(), 'docs', 'architecture', 'architecture.md');
 
-    if (fs.existsSync(mdPath)) {
-        res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
-        res.sendFile(mdPath);
-    } else {
-        res.status(404).send('# Arquivo de arquitetura não encontrado');
-    }
-});
-
-
-router.get('/api/v1/docs/architecture', (_: Request, res: Response) => {
-    const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-      <meta charset="UTF-8">
-      <title>Documentação da Arquitetura</title>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-    </head>
-    <body>
-      <div id="app">Carregando documentação...</div>
-      <script>
-        window.$docsify = {
-          name: 'SINAN Backend',
-          repo: '',
-          loadSidebar: false,
-          homepage: 'architecture.md',
-        }
-      </script>
-      <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-    </body>
-    </html>
-  `;
-
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader(
-        'Content-Security-Policy',
-        "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:;"
-    );
-    res.send(htmlContent);
-});
 export { router };

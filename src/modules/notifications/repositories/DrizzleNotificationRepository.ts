@@ -3,7 +3,7 @@ import { Notification } from '#modules/notifications/entities/Notification';
 import type { ReadNotificationsQueryDTO } from '#modules/notifications/ports/NotificationCrudServicePort';
 
 import { db } from '#shared/infra/database/drizzle/connection';
-import { notificationsTable } from '#shared/infra/database/drizzle/schema';
+import { notificationsTable, patientsTable, unitsTable } from '#shared/infra/database/drizzle/schema';
 import {
     diseaseTablesRegistry,
     stripNotificationId
@@ -14,13 +14,11 @@ import { SusCard } from '#shared/domain/value-objects/SusCard';
 import { BirthDate } from '#shared/domain/value-objects/BirthDate';
 import type { Gender, EducationLevel, RaceColor } from '#shared/domain/enums/PatientEnums';
 
-import { eq, and, count, asc } from 'drizzle-orm';
-import type { PgColumn } from 'drizzle-orm/pg-core';
-
 import { BadRequestError, NotFoundError } from '#shared/errors/HttpErrors';
 import type { PaginatedResponseDTO } from '#shared/dtos/paginated-query.dto';
 
-
+import { eq, and, count, asc } from 'drizzle-orm';
+import type { PgColumn } from 'drizzle-orm/pg-core';
 
 function formatDateToUtcString(date: Date): string {
     const year = date.getUTCFullYear();
@@ -47,7 +45,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
         }
 
         return await db.transaction(async (tx) => {
-            const baseData = this.toBasePersistence(notification);
+            const baseData = await this.toBasePersistence(notification);
 
             const [dbNotification] = await tx.insert(notificationsTable)
                 .values(baseData)
@@ -81,11 +79,11 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
         }
 
         return await db.transaction(async (tx) => {
-            const baseData = this.toBasePersistence(notification);
+            const baseData = await this.toBasePersistence(notification);
 
             const [dbNotification] = await tx.update(notificationsTable)
                 .set(baseData)
-                .where(eq(notificationsTable.id, id))
+                .where(eq(notificationsTable.publicId, id))
                 .returning();
 
             if (!dbNotification) {
@@ -101,7 +99,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
                 }
 
                 const specificData = {
-                    notificationId: id,
+                    notificationId: dbNotification.id,
                     ...(notification.specificFields as object)
                 };
 
@@ -127,8 +125,8 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
     async delete(id: string): Promise<void> {
         const [deleted] = await db.update(notificationsTable)
             .set({ status: 'DELETED' })
-            .where(eq(notificationsTable.id, id))
-            .returning({ id: notificationsTable.id });
+            .where(eq(notificationsTable.publicId, id))
+            .returning({ publicId: notificationsTable.publicId });
 
         if (!deleted) {
             throw new NotFoundError(`Notification with ID ${id} not found`);
@@ -140,7 +138,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
             .from(notificationsTable)
             .where(
                 and(
-                    eq(notificationsTable.id, id),
+                    eq(notificationsTable.publicId, id),
                     eq(notificationsTable.status, 'ACTIVE')
                 )
             )
@@ -154,7 +152,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
         if (diseaseConfig) {
             const [diseaseRecord] = await (db.select()
                 .from(diseaseConfig.table)
-                .where(eq(diseaseConfig.notificationIdColumn, id))
+                .where(eq(diseaseConfig.notificationIdColumn, dbNotification.id))
                 .limit(1) as unknown as Promise<Record<string, unknown>[]>);
 
             if (diseaseRecord) {
@@ -170,7 +168,13 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
 
         const conditions = [];
 
-        if (patientId) conditions.push(eq(notificationsTable.patientId, patientId));
+        if (patientId) {
+            const [patient] = await db.select({ id: patientsTable.id })
+                .from(patientsTable)
+                .where(eq(patientsTable.publicId, patientId));
+
+            conditions.push(eq(notificationsTable.patientId, patient?.id ?? -1));
+        }
         if (notificationTypeSlug) conditions.push(eq(notificationsTable.notificationTypeSlug, notificationTypeSlug));
         conditions.push(eq(notificationsTable.status, 'ACTIVE'));
 
@@ -192,8 +196,8 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
             .limit(limit)
             .offset(offset);
 
-        const notifications: Notification[] = dbRecords.map(row =>
-            this.mapToDomain(row, {})
+        const notifications: Notification[] = await Promise.all(
+            dbRecords.map(row => this.mapToDomain(row, {}))
         );
 
         return {
@@ -205,16 +209,26 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
         };
     }
 
-    private toBasePersistence(notification: Notification<unknown>): typeof notificationsTable.$inferInsert {
-        const unitIdNumber = Number(notification.unitId);
-        if (isNaN(unitIdNumber)) {
-            throw new BadRequestError(`Invalid health unit ID: '${notification.unitId}' is not a valid number`);
+    private async toBasePersistence(notification: Notification<unknown>): Promise<typeof notificationsTable.$inferInsert> {
+        const [unit] = await db.select({ id: unitsTable.id })
+            .from(unitsTable)
+            .where(eq(unitsTable.publicId, notification.unitId));
+
+        if (!unit) {
+            throw new BadRequestError(`Health unit with ID '${notification.unitId}' was not found`);
+        }
+
+        const [patient] = await db.select({ id: patientsTable.id })
+            .from(patientsTable)
+            .where(eq(patientsTable.publicId, notification.patientId));
+
+        if (!patient) {
+            throw new NotFoundError(`Patient with ID ${notification.patientId} not found`);
         }
 
         return {
-            ...(notification.id ? { id: notification.id } : {}),
-            patientId: notification.patientId,
-            unitId: unitIdNumber,
+            patientId: patient.id,
+            unitId: unit.id,
             patientName: notification.patientName,
             patientCpf: notification.patientCpf.value,
             patientSusCard: notification.patientSusCardNumber.value,
@@ -232,10 +246,18 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
         };
     }
 
-    private mapToDomain<T>(dbNotification: typeof notificationsTable.$inferSelect, specificFields: T): Notification<T> {
+    private async mapToDomain<T>(dbNotification: typeof notificationsTable.$inferSelect, specificFields: T): Promise<Notification<T>> {
+        const [patient] = await db.select({ publicId: patientsTable.publicId })
+            .from(patientsTable)
+            .where(eq(patientsTable.id, dbNotification.patientId));
+
+        const [unit] = await db.select({ publicId: unitsTable.publicId })
+            .from(unitsTable)
+            .where(eq(unitsTable.id, dbNotification.unitId));
+
         return Notification.create<T>({
-            id: dbNotification.id,
-            patientId: dbNotification.patientId,
+            publicId: dbNotification.publicId,
+            patientId: patient?.publicId ?? '',
             patientName: dbNotification.patientName,
             patientCpf: Cpf.create(dbNotification.patientCpf),
             patientSusCardNumber: SusCard.create(dbNotification.patientSusCard),
@@ -246,7 +268,7 @@ export class DrizzleNotificationRepository implements NotificationRepositoryPort
             patientBirthCity: dbNotification.patientBirthCity,
             patientCurrentAddress: dbNotification.patientCurrentAddress,
 
-            unitId: dbNotification.unitId,
+            unitId: unit?.publicId ?? '',
             notificationTypeSlug: dbNotification.notificationTypeSlug,
             status: dbNotification.status,
             notificationDate: parseDateAsUtc(dbNotification.dtNotification),

@@ -2,12 +2,12 @@ import { Password } from '#modules/users/value-objects/Password';
 import type { Email } from '#modules/users/value-objects/Email';
 
 type UserProps = {
-    id?: string;
+    publicId?: string;
     name: string;
     email: Email;
     hashedPassword: Password;
     role: 'admin' | 'user';
-    unitId: number;
+    unitId: string;
 }
 
 class User {
@@ -16,7 +16,7 @@ class User {
         this.props = props;
     }
 
-    public static create(name: string, email: Email, hashedPassword: Password, role: 'admin' | 'user', unitId: number): User {
+    public static create(name: string, email: Email, hashedPassword: Password, role: 'admin' | 'user', unitId: string): User {
 
         const userProps: UserProps = {
             name,
@@ -32,8 +32,8 @@ class User {
         return new User(props);
     }
 
-    get id(): string | undefined {
-        return this.props.id;
+    get publicId(): string | undefined {
+        return this.props.publicId;
     }
 
     get name(): string {
@@ -52,7 +52,7 @@ class User {
         return this.props.role;
     }
 
-    get unitId(): number {
+    get unitId(): string {
         return this.props.unitId;
     }
 }

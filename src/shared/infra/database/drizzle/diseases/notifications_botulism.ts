@@ -2,13 +2,13 @@
 // ATENÇÃO: Arquivo gerado automaticamente via script. Não edite manualmente.
 // ============================================================================
 
-import { pgTable, uuid, date, integer, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, integer, date, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { notificationsTable } from '#shared/infra/database/drizzle/schema';
 
 export const notificationsBotulismTable = pgTable('notifications_botulism', {
-    notificationId: uuid('notification_id')
+    notificationId: integer('notification_id')
         .primaryKey()
         .references(() => notificationsTable.id, { onDelete: 'cascade' }),
     dtFirstAttendance: date('dt_first_attendance'),

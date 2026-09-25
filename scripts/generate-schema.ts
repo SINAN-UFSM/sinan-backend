@@ -40,7 +40,7 @@ function generateDrizzleSchemaCode(spec: DiseaseSpec): string {
     const payloadSchemaName = `create${pascalTableName}PayloadSchema`;
     const payloadDtoTypeName = `Create${pascalTableName}PayloadDTO`;
 
-    const usedImports = new Set<string>(['pgTable', 'uuid']);
+    const usedImports = new Set<string>(['pgTable', 'integer']);
 
     const columnDefinitions = spec.fields.map(field => {
         const propName = snakeToCamel(field.name);
@@ -113,7 +113,7 @@ import { z } from 'zod';
 import { notificationsTable } from '#shared/infra/database/drizzle/schema';
 
 export const ${tableVarName} = pgTable('${spec.tableName}', {
-    notificationId: uuid('notification_id')
+    notificationId: integer('notification_id')
         .primaryKey()
         .references(() => notificationsTable.id, { onDelete: 'cascade' }),
 ${columnDefinitions.join('\n')}

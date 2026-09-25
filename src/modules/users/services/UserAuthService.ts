@@ -37,7 +37,7 @@ class UserAuthService implements UserAuthServicePort {
         }
 
         const payload = {
-            sub: user.id,
+            sub: user.publicId,
             role: user.role
         }
 
@@ -47,7 +47,7 @@ class UserAuthService implements UserAuthServicePort {
         const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
-        const domainRefreshToken = RefreshToken.create(user.id as string, tokenHash, expiresAt);
+        const domainRefreshToken = RefreshToken.create(user.publicId as string, tokenHash, expiresAt);
         await this.refreshTokenRepository.save(domainRefreshToken);
 
         return {
@@ -76,7 +76,7 @@ class UserAuthService implements UserAuthServicePort {
         }
 
         const payload = {
-            sub: user.id,
+            sub: user.publicId,
             role: user.role
         }
 
@@ -86,7 +86,7 @@ class UserAuthService implements UserAuthServicePort {
         const newTokenHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
-        const domainRefreshToken = RefreshToken.create(user.id as string, newTokenHash, expiresAt);
+        const domainRefreshToken = RefreshToken.create(user.publicId as string, newTokenHash, expiresAt);
         await this.refreshTokenRepository.save(domainRefreshToken);
 
         // Revoke the old refresh token

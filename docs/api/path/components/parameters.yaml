@@ -99,7 +99,8 @@ UnitIDParam:
   name: unitId
   in: query
   required: false
-  description: Filtra por ID da unidade de saúde (Numérico).
+  description: Filtra por ID público da unidade de saúde (UUID).
   schema:
-    type: integer
-  example: 12
+    type: string
+    format: uuid
+  example: "550e8400-e29b-41d4-a716-446655440000"

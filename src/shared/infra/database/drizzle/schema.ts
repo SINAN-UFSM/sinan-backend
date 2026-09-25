@@ -6,6 +6,7 @@ const roleEnum = pgEnum('role', ['admin', 'user']);
 
 const unitsTable = pgTable('units', {
     id: serial('id').primaryKey(),
+    publicId: uuid('public_id').notNull().unique().defaultRandom(),
     name: varchar('name', { length: 255 }).notNull(),
     city: varchar('city', { length: 255 }).notNull(),
     state: varchar('state', { length: 255 }).notNull(),
@@ -19,7 +20,8 @@ const unitsTable = pgTable('units', {
 ]);
 
 const usersTable = pgTable('users', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: serial('id').primaryKey(),
+    publicId: uuid('public_id').notNull().unique().defaultRandom(),
     name: varchar('name', { length: 255 }).notNull(),
     email: varchar('email', { length: 255 }).notNull().unique(),
     hashedPassword: varchar('hashed_password', { length: 255 }).notNull(),
@@ -32,8 +34,8 @@ const usersTable = pgTable('users', {
 ]);
 
 const refreshTokensTable = pgTable('refresh_tokens', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => usersTable.id, { onDelete: 'cascade' }),
+    id: serial('id').primaryKey(),
+    userId: integer('user_id').notNull().references(() => usersTable.id, { onDelete: 'cascade' }),
     tokenHash: text('token_hash').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     revoked: boolean('revoked').notNull().default(false),
@@ -43,7 +45,8 @@ const refreshTokensTable = pgTable('refresh_tokens', {
 ]);
 
 const patientsTable = pgTable('patients', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: serial('id').primaryKey(),
+    publicId: uuid('public_id').notNull().unique().defaultRandom(),
     name: varchar('name', { length: 255 }).notNull(),
     cpf: varchar('cpf', { length: 11 }).notNull().unique(),
     susCard: varchar('sus_card', { length: 15 }).notNull().unique(),
@@ -64,8 +67,9 @@ const patientsTable = pgTable('patients', {
 ]);
 
 const notificationsTable = pgTable('notifications', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    patientId: uuid('patient_id').notNull().references(() => patientsTable.id),
+    id: serial('id').primaryKey(),
+    publicId: uuid('public_id').notNull().unique().defaultRandom(),
+    patientId: integer('patient_id').notNull().references(() => patientsTable.id),
     unitId: integer('unit_id').notNull().references(() => unitsTable.id),
     patientName: varchar('patient_name', { length: 255 }).notNull(),
     patientCpf: varchar('patient_cpf', { length: 11 }).notNull(),

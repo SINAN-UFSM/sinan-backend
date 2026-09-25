@@ -26,7 +26,7 @@ class DrizzleUnitRepository {
         return this.mapToDomain(dbUnit);
     }
 
-    public async update(id: number, unit: Unit): Promise<Unit> {
+    public async update(publicId: string, unit: Unit): Promise<Unit> {
         const updateData = {
             name: unit.name,
             city: unit.city,
@@ -35,22 +35,22 @@ class DrizzleUnitRepository {
 
         const [dbUnit] = await db.update(unitsTable)
             .set(updateData)
-            .where(eq(unitsTable.id, id))
+            .where(eq(unitsTable.publicId, publicId))
             .returning();
 
         return this.mapToDomain(dbUnit);
     }
 
-    public async delete(id: number): Promise<void> {
+    public async delete(publicId: string): Promise<void> {
         await db.update(unitsTable)
             .set({ isActive: false })
-            .where(eq(unitsTable.id, id));
+            .where(eq(unitsTable.publicId, publicId));
     }
 
-    public async findById(id: number): Promise<Unit | null> {
+    public async findById(publicId: string): Promise<Unit | null> {
         const dbUnit = await db.select()
             .from(unitsTable)
-            .where(eq(unitsTable.id, id));
+            .where(eq(unitsTable.publicId, publicId));
 
         if (dbUnit.length === 0) {
             return null;
@@ -126,7 +126,7 @@ class DrizzleUnitRepository {
     }
     private mapToDomain(dbUnit: DbUnit): Unit {
         return Unit.create({
-            id: dbUnit.id,
+            publicId: dbUnit.publicId,
             name: dbUnit.name,
             city: dbUnit.city,
             state: State.create(dbUnit.state),

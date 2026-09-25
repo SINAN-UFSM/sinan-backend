@@ -4,7 +4,7 @@ import { BirthDate } from '#shared/domain/value-objects/BirthDate';
 import { Gender, EducationLevel, RaceColor } from '#shared/domain/enums/PatientEnums';
 
 type NotificationBaseProps = {
-    id?: string;
+    publicId?: string;
     patientId: string;
     patientName: string;
     patientCpf: Cpf;
@@ -15,7 +15,7 @@ type NotificationBaseProps = {
     patientSusCardNumber: SusCard;
     patientBirthCity: string;
     patientCurrentAddress: string;
-    unitId: number;
+    unitId: string;
     notificationTypeSlug: string;
     status: string;
     notificationDate: Date;
@@ -37,7 +37,7 @@ class Notification<TDiseaseDetails = Record<string, unknown>> {
         this._specificFields = specificFields;
     }
 
-    get id(): string | undefined { return this.props.id; }
+    get publicId(): string | undefined { return this.props.publicId; }
     get patientId(): string { return this.props.patientId; }
     get patientName(): string { return this.props.patientName; }
     get patientCpf(): Cpf { return this.props.patientCpf; }
@@ -48,7 +48,7 @@ class Notification<TDiseaseDetails = Record<string, unknown>> {
     get patientSusCardNumber(): SusCard { return this.props.patientSusCardNumber; }
     get patientBirthCity(): string { return this.props.patientBirthCity; }
     get patientCurrentAddress(): string { return this.props.patientCurrentAddress; }
-    get unitId(): number { return this.props.unitId; }
+    get unitId(): string { return this.props.unitId; }
     get notificationTypeSlug(): string { return this.props.notificationTypeSlug; }
     get status(): string { return this.props.status; }
     get notificationDate(): Date { return this.props.notificationDate; }

@@ -1,7 +1,8 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '#shared/infra/database/drizzle/connection';
-import { usersTable, type DbUser, type DbUserInsert } from '#shared/infra/database/drizzle/schema';
+import { usersTable, unitsTable, type DbUser, type DbUserInsert } from '#shared/infra/database/drizzle/schema';
+import { NotFoundError } from '#shared/errors/HttpErrors';
 
 import type { UserRepositoryPort } from '#modules/users/ports/UserRepositoryPort';
 import { User, type UserProps } from '#modules/users/entities/User';
@@ -11,12 +12,13 @@ import { Email } from '#modules/users/value-objects/Email';
 class DrizzleUserRepository implements UserRepositoryPort {
 
     public async save(user: User): Promise<User> {
+        const unitId = await this.resolveUnitId(user.unitId);
         const rawData = {
             name: user.name,
             email: user.email.value,
             hashedPassword: user.hashedPassword.value,
             role: user.role,
-            unitId: user.unitId
+            unitId
         };
 
         const [dbUser] = await db.insert(usersTable)
@@ -33,22 +35,22 @@ class DrizzleUserRepository implements UserRepositoryPort {
         if (user.email !== undefined) updateData.email = user.email.value;
         if (user.hashedPassword !== undefined) updateData.hashedPassword = user.hashedPassword.value;
         if (user.role !== undefined) updateData.role = user.role;
-        if (user.unitId !== undefined) updateData.unitId = user.unitId;
+        if (user.unitId !== undefined) updateData.unitId = await this.resolveUnitId(user.unitId);
 
         const [dbUser] = await db.update(usersTable)
             .set(updateData)
-            .where(eq(usersTable.id, id))
+            .where(eq(usersTable.publicId, id))
             .returning();
 
         return this.mapToDomain(dbUser);
     }
 
     public async delete(id: string): Promise<void> {
-        await db.delete(usersTable).where(eq(usersTable.id, id));
+        await db.delete(usersTable).where(eq(usersTable.publicId, id));
     }
 
     public async findById(id: string): Promise<User | null> {
-        const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.id, id));
+        const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.publicId, id));
         if (!dbUser) {
             return null;
         }
@@ -65,17 +67,37 @@ class DrizzleUserRepository implements UserRepositoryPort {
         return this.mapToDomain(dbUser);
 
     }
-    private mapToDomain(dbUser: DbUser): User {
+    private async mapToDomain(dbUser: DbUser): Promise<User> {
+        const [unit] = await db.select({ publicId: unitsTable.publicId })
+            .from(unitsTable)
+            .where(eq(unitsTable.id, dbUser.unitId));
+
+        if (!unit) {
+            throw new NotFoundError(`Unit with internal ID ${dbUser.unitId} not found`);
+        }
+
         const hashedPassword = Password.fromPersisted(dbUser.hashedPassword);
         const email = Email.fromPersisted(dbUser.email);
         return User.reconstitute({
-            id: dbUser.id,
+            publicId: dbUser.publicId,
             name: dbUser.name,
             email: email,
             hashedPassword: hashedPassword,
             role: dbUser.role,
-            unitId: dbUser.unitId
+            unitId: unit.publicId
         });
+    }
+
+    private async resolveUnitId(publicId: string): Promise<number> {
+        const [unit] = await db.select({ id: unitsTable.id })
+            .from(unitsTable)
+            .where(eq(unitsTable.publicId, publicId));
+
+        if (!unit) {
+            throw new NotFoundError(`Unit with ID ${publicId} not found`);
+        }
+
+        return unit.id;
     }
 }
 

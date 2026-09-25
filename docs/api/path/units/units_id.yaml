@@ -8,7 +8,7 @@ get:
   tags:
     - Unidades
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
     "200":
       description: Unidade recuperada com sucesso.
@@ -31,7 +31,7 @@ patch:
   tags:
     - Unidades
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   requestBody:
     required: true
     content:
@@ -62,7 +62,7 @@ delete:
   tags:
     - Unidades
   parameters:
-    - $ref: "../components/parameters.yaml#/PathId"
+    - $ref: "../components/parameters.yaml#/PathUuid"
   responses:
     "204":
       description: Unidade excluída com sucesso (Sem conteúdo de retorno).

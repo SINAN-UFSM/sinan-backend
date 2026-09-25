@@ -1,7 +1,7 @@
 import { State } from '#modules/units/value-objects/State';
 
 type UnitProps = {
-    id?: number;
+    publicId?: string;
     name: string;
     city: string;
     state: State;
@@ -22,8 +22,8 @@ class Unit {
         return new Unit(props);
     }
 
-    get id(): number | undefined {
-        return this.props.id;
+    get publicId(): string | undefined {
+        return this.props.publicId;
     }
 
     get name(): string {

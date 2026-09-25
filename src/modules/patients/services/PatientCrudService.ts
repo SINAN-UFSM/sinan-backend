@@ -48,7 +48,7 @@ export class PatientCrudService implements PatientCrudServicePort {
         }
 
         const updatedPatientEntity = Patient.create({
-            id: existingPatient.id,
+            publicId: existingPatient.publicId,
             name: request.name ?? existingPatient.name,
             cpf: request.cpf ? Cpf.create(request.cpf) : existingPatient.cpf,
             susCard: request.susCard ? SusCard.create(request.susCard) : existingPatient.susCard,
@@ -103,7 +103,7 @@ export class PatientCrudService implements PatientCrudServicePort {
 
     private toResponseDTO(patient: Patient): PatientResponseDTO {
         return {
-            id: patient.id as string,
+            id: patient.publicId as string,
             name: patient.name,
             cpf: patient.cpf.value,
             susCard: patient.susCard.value,

@@ -50,7 +50,7 @@ class UserCrudService implements UserCrudServicePort {
         const dbUser = await this.userRepository.save(domainUser);
 
         return {
-            id: dbUser.id as string,
+            id: dbUser.publicId as string,
             name: dbUser.name,
             email: dbUser.email.value,
             role: dbUser.role,
@@ -99,7 +99,7 @@ class UserCrudService implements UserCrudServicePort {
         }
 
         return {
-            id: updatedUser.id as string,
+            id: updatedUser.publicId as string,
             name: updatedUser.name,
             email: updatedUser.email.value,
             role: updatedUser.role,

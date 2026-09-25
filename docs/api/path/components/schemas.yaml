@@ -36,9 +36,10 @@ UserResponse:
             - admin
             - user
         unitId:
-          type: integer
-          description: ID da unidade de saúde associada ao usuário.
-          example: 1
+          type: string
+          format: uuid
+          description: ID público da unidade de saúde associada ao usuário.
+          example: "550e8400-e29b-41d4-a716-446655440000"
 
 UserCreateRequest:
   allOf:
@@ -66,9 +67,10 @@ UserCreateRequest:
             - admin
             - user
         unitId:
-          type: integer
-          description: ID da unidade de saúde associada ao usuário.
-          example: 1
+          type: string
+          format: uuid
+          description: ID público da unidade de saúde associada ao usuário.
+          example: "550e8400-e29b-41d4-a716-446655440000"
 
 UserUpdateRequest:
   type: object
@@ -97,9 +99,10 @@ UserUpdateRequest:
         - admin
         - user
     unitId:
-      type: integer
-      description: ID da unidade (requer privilégios de admin).
-      example: 1
+      type: string
+      format: uuid
+      description: ID público da unidade (requer privilégios de admin).
+      example: "550e8400-e29b-41d4-a716-446655440000"
 
 # --- PATIENT SCHEMA ---
 PatientBase:
@@ -282,9 +285,10 @@ UnitResponse:
     - type: object
       properties:
         id:
-          type: integer
-          description: ID único da unidade (gerado pelo banco).
-          example: 1
+          type: string
+          format: uuid
+          description: ID público único da unidade.
+          example: "550e8400-e29b-41d4-a716-446655440000"
         isActive:
           type: boolean
           description: Indica se a unidade está ativa no cadastro lógico.
@@ -374,9 +378,10 @@ NotificationBase:
       description: Data do sintoma/ocorrência.
       example: "2026-06-20"
     unitId:
-      type: integer
-      description: ID da unidade de saúde.
-      example: 1
+      type: string
+      format: uuid
+      description: ID público da unidade de saúde.
+      example: "550e8400-e29b-41d4-a716-446655440000"
     status:
       type: string
       description: Status atual da notificação.
@@ -538,7 +543,8 @@ BotulismUpdateRequest:
       type: string
       format: date
     unitId:
-      type: integer
+      type: string
+      format: uuid
     status:
       type: string
     notes:

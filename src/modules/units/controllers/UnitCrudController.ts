@@ -8,7 +8,8 @@ import type {
 import {
     createUnitSchema,
     updateUnitSchema,
-    readUnitsQuerySchema
+    readUnitsQuerySchema,
+    uuidParamSchema
 } from '#modules/units/ports/UnitCrudServicePort';
 
 export class UnitCrudController {
@@ -31,10 +32,10 @@ export class UnitCrudController {
 
     async updateUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = Number(req.params.id);
+            const { id: publicId } = uuidParamSchema.parse(req.params);
             const bodyData = updateUnitSchema.parse(req.body);
             const unitDTO: UpdateUnitDTO = {
-                id,
+                publicId,
                 ...bodyData,
             };
 
@@ -47,8 +48,8 @@ export class UnitCrudController {
 
     async deleteUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = Number(req.params.id);
-            await this.unitService.deleteUnit(id);
+            const { id: publicId } = uuidParamSchema.parse(req.params);
+            await this.unitService.deleteUnit(publicId);
 
             res.status(204).send();
         } catch (error: unknown) {
@@ -58,8 +59,8 @@ export class UnitCrudController {
 
     async getUnit(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const id = Number(req.params.id);
-            const unit = await this.unitService.readUnit(id);
+            const { id: publicId } = uuidParamSchema.parse(req.params);
+            const unit = await this.unitService.readUnit(publicId);
 
             if (!unit) {
                 res.status(404).json({ error: 'Unit not found' });

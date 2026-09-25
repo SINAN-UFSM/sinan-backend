@@ -22,7 +22,7 @@ class UnitCrudService implements UnitCrudServicePort {
         });
         const dbUnit = await this.unitRepository.save(unit);
         const unitResponse: UnitResponseDTO = {
-            id: dbUnit.id as number,
+            id: dbUnit.publicId as string,
             name: dbUnit.name,
             state: dbUnit.state.value,
             city: dbUnit.city,
@@ -33,22 +33,22 @@ class UnitCrudService implements UnitCrudServicePort {
     }
 
     async updateUnit(unitDTO: UpdateUnitDTO): Promise<UnitResponseDTO> {
-        const existingUnit = await this.unitRepository.findById(unitDTO.id);
+        const existingUnit = await this.unitRepository.findById(unitDTO.publicId);
         if (!existingUnit) {
-            throw new NotFoundError(`Unit with ID ${unitDTO.id} not found`);
+            throw new NotFoundError(`Unit with ID ${unitDTO.publicId} not found`);
         }
         const unitName = unitDTO.name ?? existingUnit.name;
         const state = unitDTO.state !== undefined ? State.create(unitDTO.state) : existingUnit.state;
         const unit = Unit.create({
-            id: unitDTO.id,
+            publicId: existingUnit.publicId,
             name: unitName,
             state: state,
             city: unitDTO.city ?? existingUnit.city,
         });
 
-        const dbUnit = await this.unitRepository.update(unitDTO.id, unit);
+        const dbUnit = await this.unitRepository.update(unitDTO.publicId, unit);
         const unitResponse: UnitResponseDTO = {
-            id: dbUnit.id as number,
+            id: dbUnit.publicId as string,
             name: dbUnit.name,
             state: dbUnit.state.value,
             city: dbUnit.city,
@@ -58,23 +58,23 @@ class UnitCrudService implements UnitCrudServicePort {
         return unitResponse;
     }
 
-    async deleteUnit(unitId: number): Promise<void> {
-        const existingUnit = await this.unitRepository.findById(unitId);
+    async deleteUnit(publicId: string): Promise<void> {
+        const existingUnit = await this.unitRepository.findById(publicId);
         if (!existingUnit) {
-            throw new NotFoundError(`Unit with ID ${unitId} not found`);
+            throw new NotFoundError(`Unit with ID ${publicId} not found`);
         }
 
-        await this.unitRepository.delete(unitId);
+        await this.unitRepository.delete(publicId);
     }
 
-    async readUnit(unitId: number): Promise<UnitResponseDTO | null> {
-        const dbUnit = await this.unitRepository.findById(unitId);
+    async readUnit(publicId: string): Promise<UnitResponseDTO | null> {
+        const dbUnit = await this.unitRepository.findById(publicId);
         if (!dbUnit) {
             return null;
         }
 
         const unitResponse: UnitResponseDTO = {
-            id: dbUnit.id as number,
+            id: dbUnit.publicId as string,
             name: dbUnit.name,
             state: dbUnit.state.value,
             city: dbUnit.city,
@@ -88,7 +88,7 @@ class UnitCrudService implements UnitCrudServicePort {
         const paginatedUnits = await this.unitRepository.findPaginated(queryDTO);
 
         const unitResponseDTOs: UnitResponseDTO[] = paginatedUnits.data.map((unit) => ({
-            id: unit.id as number,
+            id: unit.publicId as string,
             name: unit.name,
             state: unit.state.value,
             city: unit.city,

@@ -10,7 +10,7 @@ export const createUserSchema = z.object({
     email: z.email({ error: 'Invalid email format' }),
     password: z.string().min(8, 'Password must be at least 8 characters long'),
     role: roleEnum,
-    unitId: z.coerce.number().int().positive('Unit ID must be a positive integer'),
+    unitId: z.uuid('Unit ID must be a valid UUID'),
 });
 
 export const updateUserSchema = z.object({
@@ -18,14 +18,14 @@ export const updateUserSchema = z.object({
     email: z.email({ error: 'Invalid email format' }).optional(),
     password: z.string().min(8, 'Password must be at least 8 characters long').optional(),
     role: roleEnum.optional(),
-    unitId: z.coerce.number().int().positive('Unit ID must be a positive integer').optional(),
+    unitId: z.uuid('Unit ID must be a valid UUID').optional(),
 });
 
 export const readUsersQuerySchema = z.object({
     name: z.string().optional(),
     email: z.string().optional(),
     role: roleEnum.optional(),
-    unitId: z.coerce.number().optional(),
+    unitId: z.uuid().optional(),
     page: z.coerce.number().min(1).default(1),
     limit: z.coerce.number().min(1).default(10),
     search: z.string().optional(),
@@ -42,7 +42,7 @@ type UserResponseDTO = {
     name: string;
     email: string;
     role: 'admin' | 'user';
-    unitId: number;
+    unitId: string;
 };
 
 type UserFiltersDTO = z.infer<typeof readUsersQuerySchema>;

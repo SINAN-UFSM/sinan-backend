@@ -35,7 +35,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
         }
 
         const newNotification = Notification.create({
-            patientId: patient.id as string,
+            patientId: patient.publicId as string,
             patientName: patient.name,
             patientCpf: Cpf.create(patient.cpf.value),
             patientBirthDate: BirthDate.create(patient.birthDate.value),
@@ -72,7 +72,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
         }
 
         const updatedNotificationEntity = Notification.create({
-            id: existingNotification.id,
+            publicId: existingNotification.publicId,
             patientId: existingNotification.patientId,
             patientName: existingNotification.patientName,
             patientCpf: existingNotification.patientCpf,
@@ -145,7 +145,7 @@ export class NotificationCrudService implements NotificationCrudServicePort {
         };
 
         return {
-            id: notification.id as string,
+            id: notification.publicId as string,
             patientId: notification.patientId,
 
             patientName: notification.patientName,

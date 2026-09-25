@@ -16,7 +16,7 @@ const baseNotificationFields = {
     patientId: z.uuid('Patient ID must be a valid UUID'),
     dtNotification: z.string().min(1, 'Notification date cannot be empty'),
     occurrenceDate: z.string().min(1, 'Occurrence date cannot be empty'),
-    unitId: z.coerce.number().int().positive('Health unit ID must be positive'),
+    unitId: z.uuid('Health unit ID must be a valid UUID'),
     notes: z.string().optional(),
     status: z.string().default('ACTIVE').optional(),
 };
@@ -24,7 +24,7 @@ const baseNotificationFields = {
 const baseUpdateNotificationFields = {
     dtNotification: z.string().min(1, 'Notification date cannot be empty').optional(),
     occurrenceDate: z.string().min(1, 'Occurrence date cannot be empty').optional(),
-    unitId: z.coerce.number().int().positive('Health unit ID must be positive').optional(),
+    unitId: z.uuid('Health unit ID must be a valid UUID').optional(),
     notes: z.string().optional(),
     status: z.string().optional(),
 };
@@ -139,7 +139,7 @@ type NotificationResponseDTO = {
     occurrenceDate: string;
     status: string;
     notes?: string;
-    unitId?: number;
+    unitId?: string;
 
     patientName?: string;
     patientCpf?: string;

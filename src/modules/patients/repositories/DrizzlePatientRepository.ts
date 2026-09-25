@@ -29,7 +29,7 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
 
         const [dbPatient] = await db.update(patientsTable)
             .set(patientData)
-            .where(eq(patientsTable.id, patientId))
+            .where(eq(patientsTable.publicId, patientId))
             .returning();
 
         return this.mapToDomain(dbPatient);
@@ -38,7 +38,7 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
     async delete(patientId: string): Promise<void> {
         const result = await db.update(patientsTable)
             .set({ isActive: false })
-            .where(eq(patientsTable.id, patientId));
+            .where(eq(patientsTable.publicId, patientId));
 
         if (result.rowCount === 0) {
             throw new NotFoundError(`Patient with ID ${patientId} not found`);
@@ -48,7 +48,7 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
     async findById(patientId: string): Promise<Patient | null> {
         const dbPatient = await db.select()
             .from(patientsTable)
-            .where(eq(patientsTable.id, patientId))
+            .where(eq(patientsTable.publicId, patientId))
             .limit(1);
 
         if (dbPatient.length === 0) {
@@ -166,7 +166,7 @@ class DrizzlePatientRepository implements PatientRepositoryPort {
         const birthDate = BirthDate.create(dbPatient.birthDate);
         const phone = Phone.create(dbPatient.phone);
         return Patient.reconstitute({
-            id: dbPatient.id,
+            publicId: dbPatient.publicId,
             name: dbPatient.name,
             cpf,
             susCard,
